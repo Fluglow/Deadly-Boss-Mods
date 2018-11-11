@@ -132,6 +132,13 @@ do
 					info.checked = (frame.range == 8)
 					UIDropDownMenu_AddButton(info, 2)
 				end
+				
+				info = UIDropDownMenu_CreateInfo()
+				info.text = DBM_CORE_RANGECHECK_SETRANGE_TO:format(9)
+				info.func = setRange
+				info.arg1 = 9
+				info.checked = (frame.range == 9)
+				UIDropDownMenu_AddButton(info, 2)
 
 				info = UIDropDownMenu_CreateInfo()
 				info.text = DBM_CORE_RANGECHECK_SETRANGE_TO:format(10)
@@ -146,6 +153,13 @@ do
 				info.arg1 = 11
 				info.checked = (frame.range == 11)
 				UIDropDownMenu_AddButton(info, 2)
+				
+				info = UIDropDownMenu_CreateInfo()
+				info.text = DBM_CORE_RANGECHECK_SETRANGE_TO:format(12)
+				info.func = setRange
+				info.arg1 = 12
+				info.checked = (frame.range == 12)
+				UIDropDownMenu_AddButton(info, 2)
 
 				if initRangeCheck() then
 					info = UIDropDownMenu_CreateInfo()
@@ -155,6 +169,13 @@ do
 					info.checked = (frame.range == 12)
 					UIDropDownMenu_AddButton(info, 2)
 				end
+				
+				info = UIDropDownMenu_CreateInfo()
+				info.text = DBM_CORE_RANGECHECK_SETRANGE_TO:format(13)
+				info.func = setRange
+				info.arg1 = 13
+				info.checked = (frame.range == 13)
+				UIDropDownMenu_AddButton(info, 2)
 
 				info = UIDropDownMenu_CreateInfo()
 				info.text = DBM_CORE_RANGECHECK_SETRANGE_TO:format(15)

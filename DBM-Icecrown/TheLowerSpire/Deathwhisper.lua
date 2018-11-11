@@ -234,7 +234,18 @@ function mod:SPELL_SUMMON(args)
 			warnSummonSpirit:Show()
 			timerSummonSpiritCD:Start()
 			lastSpirit = time()
+			mod:Schedule(0.5, checkSpiritTarget)
 		end
+	end
+end
+
+function checkSpiritTarget()
+	isTanking = UnitDetailedThreatSituation("player", "target")
+	if UnitThreatSituation("player")==3 and not isTanking then
+		specWarnVengefulShade:Show()
+		SendChatMessage("Spirit on me!", "SAY")
+	elseif time() - lastSpirit < 4 then
+		mod:Schedule(0.15, checkSpiritTarget)
 	end
 end
 

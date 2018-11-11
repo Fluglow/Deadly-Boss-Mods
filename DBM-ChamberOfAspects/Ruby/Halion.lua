@@ -35,6 +35,8 @@ local specWarnShadowConsumption		= mod:NewSpecialWarningRun(74792)
 local specWarnFieryConsumption		= mod:NewSpecialWarningRun(74562)
 local specWarnMeteorStrike			= mod:NewSpecialWarningMove(75952)
 local specWarnTwilightCutter		= mod:NewSpecialWarningSpell(77844)
+local specWarnCorporealitySlow		= mod:NewSpecialWarningSpellCorporeality(74832, "40%%, slow DPS!")
+local specWarnCorporealityStop		= mod:NewSpecialWarningSpellCorporeality(74833, "30%%, stop DPS!")
 
 local timerShadowConsumptionCD		= mod:NewNextTimer(25, 74792)
 local timerFieryConsumptionCD		= mod:NewNextTimer(25, 74562)
@@ -55,11 +57,13 @@ mod:AddBoolOption("AnnounceAlternatePhase", true, "announce")
 mod:AddBoolOption("WhisperOnConsumption", false, "announce")
 mod:AddBoolOption("SetIconOnConsumption", true)
 
+
 local warned_preP2 = false
 local warned_preP3 = false
 local lastflame = 0
 local lastshroud = 0
 local phases = {}
+local lastCorpAnnounce = "slow"
 
 function mod:LocationChecker()
 	if GetTime() - lastshroud < 6 then
@@ -172,6 +176,20 @@ function mod:SPELL_AURA_APPLIED(args)--We don't use spell cast success for actua
 		end
 		if self.Options.SetIconOnConsumption then
 			self:SetIcon(args.destName, 8)
+		end
+	elseif args.spellName == "Corporeality" then
+		if args:IsSpellID(74832) then
+			if self.Options["Corporeality 40%"] == true and lastCorpAnnounce == "slow" then
+				specWarnCorporealitySlow:Show()
+			elseif lastCorpAnnounce == "stop" then
+				lastCorpAnnounce = "slow"
+				specWarnCorporealitySlow:Show()
+			end
+		elseif self.Options["Corporeality 30%"] == true and args:IsSpellID(74833) then
+			if lastCorpAnnounce == "slow" then
+				lastCorpAnnounce = "stop"
+				specWarnCorporealityStop:Show()
+			end 
 		end
 	end
 end

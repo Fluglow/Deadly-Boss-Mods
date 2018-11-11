@@ -64,8 +64,10 @@ function mod:OnCombatStart(delay)
 	else
 		enrageTimer:Start(360-delay)
 	end
-	timerCallBloodBeast:Start(-delay)
-	warnAddsSoon:Schedule(30-delay)
+	print("Delay")
+	print(delay)
+	timerCallBloodBeast:Start(30) --was "-delay"
+	warnAddsSoon:Schedule(20)  --was "30-delay"
 	timerBloodNova:Start(-delay)
 	timerRuneofBlood:Start(-delay)
 	timerBoilingBlood:Start(19-delay)
@@ -73,7 +75,7 @@ function mod:OnCombatStart(delay)
 	warned_preFrenzy = false
 	boilingBloodIcon = 8
 	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(12)
+		DBM.RangeCheck:Show(13)
 	end
 end
 
@@ -205,6 +207,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg:find(L.PullAlliance, 1, true) then
 		timerCombatStart:Start()
 	elseif msg:find(L.PullHorde, 1, true) then
-		timerCombatStart:Start(99)
+		timerCombatStart:Start(81)
 	end
 end

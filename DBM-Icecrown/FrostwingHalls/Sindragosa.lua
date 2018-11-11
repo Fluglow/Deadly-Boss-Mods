@@ -76,8 +76,14 @@ do
 		if DBM:GetRaidRank() > 0 then
 			table.sort(beaconIconTargets, sort_by_group)
 			local beaconIcons = 8
+			
+			if beaconIconTargets == nil then
+				print("List of beacon icon targets is empty")
+			end
+			
 			for i, v in ipairs(beaconIconTargets) do
 				if self.Options.AnnounceFrostBeaconIcons then
+					
 					SendChatMessage(L.BeaconIconSet:format(beaconIcons, UnitName(v)), "RAID")
 				end
 				self:SetIcon(UnitName(v), beaconIcons)

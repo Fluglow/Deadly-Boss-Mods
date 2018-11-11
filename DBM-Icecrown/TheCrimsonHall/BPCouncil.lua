@@ -73,7 +73,7 @@ function mod:OnCombatStart(delay)
 	activePrince = nil
 	table.wipe(glitteringSparksTargets)
 	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(12)
+		DBM.RangeCheck:Show(13)
 	end
 end
 
@@ -162,7 +162,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		timerTargetSwitch:Start()
 		activePrince = args.destGUID
 		if self.Options.RangeFrame then
-			DBM.RangeCheck:Show(12)
+			DBM.RangeCheck:Show(13)
 		end
 	elseif args:IsSpellID(70981) and self:IsInCombat() then
 		warnTargetSwitch:Show(L.Keleseth)
