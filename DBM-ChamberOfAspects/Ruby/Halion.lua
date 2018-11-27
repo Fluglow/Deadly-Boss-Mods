@@ -179,14 +179,14 @@ function mod:SPELL_AURA_APPLIED(args)--We don't use spell cast success for actua
 		end
 	elseif args.spellName == "Corporeality" then
 		if args:IsSpellID(74832) then
-			if self.Options["Corporeality 40%"] == true and lastCorpAnnounce == "slow" then
+			if self.Options["Corporeality 40%%, slow DPS!"] == true and lastCorpAnnounce == "slow" then
 				specWarnCorporealitySlow:Show()
 			elseif lastCorpAnnounce == "stop" then
 				lastCorpAnnounce = "slow"
 				specWarnCorporealitySlow:Show()
 			end
-		elseif self.Options["Corporeality 30%"] == true and args:IsSpellID(74833) then
-			if lastCorpAnnounce == "slow" then
+		elseif args:IsSpellID(74833) then
+			if self.Options["Corporeality 30%%, stop DPS!"] == true and lastCorpAnnounce == "slow" then
 				lastCorpAnnounce = "stop"
 				specWarnCorporealityStop:Show()
 			end 
@@ -194,7 +194,7 @@ function mod:SPELL_AURA_APPLIED(args)--We don't use spell cast success for actua
 	end
 end
 
-function mod:SPELL_AURA_REMOVED(args)
+function mod:SPELL_AURA_REMOVED(args) 
 	if args:IsSpellID(74792) then
 		if self.Options.SetIconOnConsumption then
 			self:SetIcon(args.destName, 0)

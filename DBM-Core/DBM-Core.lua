@@ -2899,7 +2899,7 @@ do
 			{
 				text = text,
 				announceType = announceType,
-				option = text,
+				option = optionName or text,
 				mod = self,
 				sound = not noSound,
 			},
@@ -2908,7 +2908,7 @@ do
 		if optionName == false then
 			obj.option = nil
 		else
-			self:AddBoolOption(text, true, "announce")		-- todo cleanup core code from that indexing type using options[text] is very bad!!! ;)
+			self:AddBoolOption(optionName or text, true, "announce")		-- todo cleanup core code from that indexing type using options[text] is very bad!!! ;)
 		end
 		table.insert(self.specwarns, obj)
 		if announceType == "stack" then

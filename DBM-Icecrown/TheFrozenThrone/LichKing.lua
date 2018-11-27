@@ -487,6 +487,8 @@ do
 		end
 	end
 	
+	local count = 0
+	
 	mod:RegisterOnUpdateHandler(function(self)
 		if self.Options.ValkyrIcon and (DBM:GetRaidRank() > 0 and not (iconsSet == 3 and self:IsDifficulty("normal25", "heroic25") or iconsSet == 1 and self:IsDifficulty("normal10", "heroic10"))) then
 			for i = 1, GetNumRaidMembers() do
@@ -498,6 +500,11 @@ do
 					valkIcons[guid] = nil
 				end
 			end
+		end
+		
+		if count < 11 then
+		 print("count register update works")
+		 count = count + 1
 		end
 	end, 1)
 end
@@ -654,5 +661,14 @@ function mod:OnSync(msg, target)
 				self:SetIcon(target, 5, 5)
 			end
 		end
+	end
+end
+
+local count = 0
+
+function mod:OnUpdate(args)
+	if count < 11 then
+		print("OnUpdate works")
+		count = count + 1
 	end
 end
