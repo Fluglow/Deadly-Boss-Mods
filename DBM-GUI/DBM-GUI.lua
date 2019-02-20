@@ -38,7 +38,7 @@
 --
 --
 
-local revision =("$Revision: 4379 $"):sub(12, -3) 
+local revision =("$Revision: 9000 $"):sub(12, -3) 
 local FrameTitle = "DBM_GUI_Option_"	-- all GUI frames get automatically a name FrameTitle..ID
 
 local PanelPrototype = {}
@@ -275,7 +275,7 @@ do
 	
 	local function replaceSpellLinks(id)
 		local spellId = tonumber(id)
-		local spellName = GetSpellInfo(spellId) or "unknown"
+		local spellName = GetSpellInfo(spellId)
 		return ("|cff71d5ff|Hspell:%d|h%s|h|r"):format(spellId, spellName)
 	end
 	
@@ -1224,10 +1224,10 @@ local function CreateOptionsMenu()
 		bmtestmode:SetPoint('TOPLEFT', bmrange, "TOPRIGHT", 0, 0)
 		bmtestmode:SetScript("OnClick", function(self) DBM:DemoMode() end)
 
-		local latencySlider = generaloptions:CreateSlider(L.Latency_Text, 50, 750, 5, 210)   -- (text , min_value , max_value , step , width)
+		local latencySlider = generaloptions:CreateSlider(L.Latency_Text, 50, 500, 5, 210)   -- (text , min_value , max_value , step , width)
      	latencySlider:SetPoint('BOTTOMLEFT', bmrange, "BOTTOMLEFT", 10, -35)
-     	latencySlider:HookScript("OnShow", function(self) self:SetValue(DBM.Options.LatencyThreshold) end)
-		latencySlider:HookScript("OnValueChanged", function(self) DBM.Options.LatencyThreshold = self:GetValue() end)
+     	latencySlider:HookScript("OnShow", function(self) self:SetValue(DBM.Options.MaxLatency or 0) end)
+		latencySlider:HookScript("OnValueChanged", function(self) DBM.Options.MaxLatency = self:GetValue() end)
 
 		-- Pizza Timer (create your own timer menu)
 		local pizzaarea = DBM_GUI_Frame:CreateArea(L.PizzaTimer_Headline, nil, 85)
@@ -1830,7 +1830,7 @@ local function CreateOptionsMenu()
 
 	-- Set Revision // please don't translate this!
 	DBM_GUI_OptionsFrameRevision:SetText("Version: "..DBM.DisplayVersion.." - Core: r"..DBM.Revision.." - Gui: r"..revision)
-	DBM_GUI_OptionsFrameTranslation:SetText("Translated by: "..L.TranslationBy)
+	DBM_GUI_OptionsFrameTranslation:SetText(L.ImprovedBy)
 end
 DBM:RegisterOnGuiLoadCallback(CreateOptionsMenu, 1)
 

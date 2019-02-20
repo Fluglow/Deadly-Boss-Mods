@@ -115,7 +115,8 @@ L:SetWarningLocalization{
 L:SetOptionLocalization{
 	WarnImpale			= "Announce $spell:69062 targets",
 	AchievementBoned	= "Show timer for Boned achievement",
-	SetIconOnImpale		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69062)
+	SetIconOnImpale		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69062),
+	PlayCountdownOnBonestorm = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(69076, GetSpellInfo(69076) or "unknown")
 }
 
 -------------------------
@@ -147,7 +148,9 @@ L:SetOptionLocalization{
 	WarnTouchInsignificance		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(71204, GetSpellInfo(71204) or "unknown"),	
 	SetIconOnDominateMind		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(71289),
 	SetIconOnDeformedFanatic	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70900),
-	SetIconOnEmpoweredAdherent	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70901)
+	SetIconOnEmpoweredAdherent	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70901),
+	PlayCountdownOnSummonAdds	= "Play countdown sound when adds are about to spawn",
+	PlayCountdownOnSummonSpirits = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(71426, GetSpellInfo(71426) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -217,7 +220,8 @@ L:SetOptionLocalization{
 	BoilingBloodIcons	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(72441),
 	RangeFrame				= "Show range frame (12 yards)",
 	RunePowerFrame			= "Show Boss Health + $spell:72371 bar",
-	BeastIcons				= "Set icons on Blood Beasts"
+	BeastIcons				= "Set icons on Blood Beasts",
+	PlayCountdownOnCallBloodBeast = "Play countdown sound when the Blood Beasts are about to be summoned"
 }
 
 L:SetMiscLocalization{
@@ -246,7 +250,9 @@ L:SetOptionLocalization{
 	WarnGastricBloat	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(72551, GetSpellInfo(72551) or "unknown"),	
 	SetIconOnGasSpore	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69279),
 	AnnounceSporeIcons	= "Announce icons for $spell:69279 targets to raid chat\n(requires announce to be enabled and promoted status)",
-	AchievementCheck	= "Announce 'Flu Shot Shortage' achievement failure to raid\n(requires promoted status)"
+	AchievementCheck	= "Announce 'Flu Shot Shortage' achievement failure to raid\n(requires promoted status)",
+	PlayCountdownOnGastricBloat = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72551, GetSpellInfo(72551) or "unknown"),
+	PlayCountdownOnMalleableGoo = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72549, GetSpellInfo(72549) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -323,7 +329,9 @@ L:SetOptionLocalization{
 	GooArrow					= "Show DBM arrow when $spell:72295 is near you",
 	SpecWarnUnboundPlague		= "Show special warning for $spell:72856 transfer",
 	SpecWarnNextPlageSelf		= "Show special warning when you are the next $spell:72856 target",
-	BypassLatencyCheck			= "Don't use latency based sync check for $spell:72295\n(only use this if you're having problems otherwise)"
+	BypassLatencyCheck			= "Don't use latency based sync check for $spell:72295\n(only use this if you're having problems otherwise)",
+	PlayCountdownOnUnboundPlague = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72856, GetSpellInfo(72856) or "unknown"),
+	PlayCountdownOnUnstableExperiment = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(70351, GetSpellInfo(70351) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -362,7 +370,9 @@ L:SetOptionLocalization{
 	ActivePrinceIcon		= "Set icon on the empowered Prince (skull)",
 	RangeFrame				= "Show range frame (12 yards)",
 	VortexArrow				= "Show DBM arrow when $spell:72037 is near you",
-	BypassLatencyCheck		= "Don't use latency based sync check for $spell:72037\n(only use this if you're having problems otherwise)"
+	BypassLatencyCheck		= "Don't use latency based sync check for $spell:72037\n(only use this if you're having problems otherwise)",
+	PlayCountdownOnTargetSwitch = "Play countdown sound on target switch",
+	PlayCountdownOnShockVortex = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72037, GetSpellInfo(72037) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -392,7 +402,8 @@ L:SetOptionLocalization{
 	SwarmingShadowsIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(71266),
 	BloodMirrorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70838),
 	RangeFrame				= "Show range frame (8 yards)",
-	YellOnFrenzy			= "Yell on $spell:71474"
+	YellOnFrenzy			= "Yell on $spell:71474",
+	PlayCountdownOnEssence	= "Play countdown sound when you need to bite\nsomeone ($spell:71474)"
 }
 
 L:SetMiscLocalization{
@@ -474,7 +485,8 @@ L:SetOptionLocalization{
 	SetIconOnUnchainedMagic	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69762),
 	ClearIconsOnAirphase	= "Clear all icons before air phase",
 	AchievementCheck		= "Announce 'All You Can Eat' achievement warnings to raid\n(requires promoted status)",
-	RangeFrame				= "Show raid icon based range frame (10 normal, 20 heroic)"
+	RangeFrame				= "Show raid icon based range frame (10 normal, 20 heroic)",
+	PlayCountdownOnBlisteringCold = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(70123, GetSpellInfo(70123) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -545,7 +557,14 @@ L:SetOptionLocalization{
 	LKBugWorkaround			= "Don't use latency based sync check for defile/shadow trap\n(Default on until a bug in sync check is worked out)",
 	AnnounceValkGrabs		= "Announce Val'kyr Shadowguard grab targets to raid chat\n(requires announce to be enabled and promoted status)",
 	SpecWarnValkyrLow		= "Show special warning when Valkyr is below 55% HP",
-	AnnouncePlagueStack		= "Announce $spell:73912 stacks to raid (10 stacks, every 5 after 10)\n(requires promoted status)"
+	AnnouncePlagueStack		= "Announce $spell:73912 stacks to raid (10 stacks, every 5 after 10)\n(requires promoted status)",
+	PlayCountdownOnInfest	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(73779, GetSpellInfo(73779) or "unknown"),
+	PlayCountdownOnShamblingEnrage = "Play countdown sound when Shambling Horrors\nare about to $spell:72143",
+	PlayCountdownOnShadowTrap = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(73539, GetSpellInfo(73539) or "unknown"),
+	PlayCountdownOnDefile	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72762, GetSpellInfo(72762) or "unknown"),
+	PlayCountdownOnRagingSpirits = "Play countdown sound when $spell:69200\nis about to spawn",
+	PlayCountdownOnValkyrs	= "Play countdown sound when $spell:71844\nare about to spawn",
+	PlayCountdownOnSoulreaper = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(73797, GetSpellInfo(73797) or "unknown")
 }
 
 L:SetMiscLocalization{

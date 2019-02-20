@@ -42,6 +42,8 @@ local timerBloodBolt				= mod:NewBuffActiveTimer(6, 71772)
 local timerBloodThirst				= mod:NewBuffActiveTimer(10, 71474)
 local timerEssenceoftheBloodQueen	= mod:NewBuffActiveTimer(60, 71473)
 
+local countdownEssenceoftheBloodQueen = mod:NewCountdown(71474, "PlayCountdownOnEssence", true)
+
 local berserkTimer					= mod:NewBerserkTimer(320)
 
 local soundSwarmingShadows			= mod:NewSound(71266)
@@ -125,9 +127,11 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnEssenceoftheBloodQueen:Show()
 			if mod:IsDifficulty("normal10") or mod:IsDifficulty("heroic10") then
 				timerEssenceoftheBloodQueen:Start(75)--75 seconds on 10 man
+				countdownEssenceoftheBloodQueen:Schedule(75-5, 5)
 				warnBloodthirstSoon:Schedule(70)
 			else
 				timerEssenceoftheBloodQueen:Start()--60 seconds on 25 man
+				countdownEssenceoftheBloodQueen:Schedule(60-5, 5)
 				warnBloodthirstSoon:Schedule(55)
 			end
 		end

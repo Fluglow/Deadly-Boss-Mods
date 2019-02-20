@@ -15,6 +15,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
 	"SPELL_CAST_START",
+    "SPELL_CAST_SUCCESS",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_SUMMON",
@@ -48,6 +49,9 @@ local timerShockVortex			= mod:NewCDTimer(16.5, 72037)			-- Seen a range from 16
 local timerKineticBombCD		= mod:NewCDTimer(18, 72053, nil, mod:IsRanged())				-- Might need tweaking
 local timerShadowPrison			= mod:NewBuffActiveTimer(10, 72999)		-- Hard mode debuff
 
+local countdownTargetSwitch		= mod:NewCountdown(70952, "PlayCountdownOnTargetSwitch", false)
+local countdownShockVortex		= mod:NewCountdown(72037, "PlayCountdownOnShockVortex", true)
+
 local berserkTimer				= mod:NewBerserkTimer(600)
 
 local soundEmpoweredFlames		= mod:NewSound(72040)
@@ -70,6 +74,7 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	warnTargetSwitchSoon:Schedule(42-delay)
 	timerTargetSwitch:Start(-delay)
+	countdownTargetSwitch:Schedule((47-delay)-5, 5)
 	activePrince = nil
 	table.wipe(glitteringSparksTargets)
 	if self.Options.RangeFrame then
@@ -137,6 +142,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(72037) then		-- Shock Vortex
 		timerShockVortex:Start()
+		countdownShockVortex:Schedule(21.5-5, 5)
 		if self.Options.BypassLatencyCheck then
 			self:ScheduleMethod(0.1, "OldShockVortexTarget")
 		else
@@ -146,6 +152,7 @@ function mod:SPELL_CAST_START(args)
 		warnEmpoweredShockVortex:Show()
 		specWarnEmpoweredShockV:Show()
 		timerShockVortex:Start()
+		countdownShockVortex:Schedule(21.5-5, 5)
 	elseif args:IsSpellID(71718) then	-- Conjure Flames
 		warnConjureFlames:Show()
 		timerConjureFlamesCD:Start()
@@ -155,11 +162,20 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
+function mod:SPELL_CAST_SUCCESS(args)
+    if args:IsSpellID(72037) then       -- Shock Vortex
+        countdownShockVortex:Cancel()
+    elseif args:IsSpellID(72039, 73037, 73038, 73039) then  -- Empowered Shock Vortex(73037, 73038, 73039 drycoded from wowhead)
+        countdownShockVortex:Cancel()
+    end
+end
+
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(70952) and self:IsInCombat() then
 		warnTargetSwitch:Show(L.Valanar)
 		warnTargetSwitchSoon:Schedule(42)
 		timerTargetSwitch:Start()
+		countdownTargetSwitch:Schedule(47-5, 5)
 		activePrince = args.destGUID
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(13)
@@ -168,6 +184,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnTargetSwitch:Show(L.Keleseth)
 		warnTargetSwitchSoon:Schedule(42)
 		timerTargetSwitch:Start()
+		countdownTargetSwitch:Schedule(47-5, 5)
 		activePrince = args.destGUID
 		if self.Options.RangeFrame then
 			self:ScheduleMethod(4.5, "HideRange")--delay hiding range frame for a few seconds after change incase valanaar got a last second vortex cast off
@@ -176,6 +193,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnTargetSwitch:Show(L.Taldaram)
 		warnTargetSwitchSoon:Schedule(42)
 		timerTargetSwitch:Start()
+		countdownTargetSwitch:Schedule(47-5, 5)
 		activePrince = args.destGUID
 		if self.Options.RangeFrame then
 			self:ScheduleMethod(4.5, "HideRange")--delay hiding range frame for a few seconds after change incase valanaar got a last second vortex cast off

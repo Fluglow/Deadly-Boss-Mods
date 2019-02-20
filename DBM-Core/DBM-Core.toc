@@ -1,16 +1,10 @@
 ﻿## Interface: 30300
-## Title:|cffffd200Deadly Boss Mods|r |cff69ccf0Core|r
-## Title-zhCN: |cffffd200Deadly Boss Mods|r |cff69ccf0核心|r
-## Title-ruRU:|cffffd200Deadly Boss Mods|r |cff69ccf0Основной|r
-## Title-zhTW:|cffffd200Deadly Boss Mods|r |cff69ccf0核心|r
-## Title-koKR:|cffffd200Deadly Boss Mods|r |cff69ccf0핵심 모듈|r
-## Title-esES:|cffffd200Deadly Boss Mods|r |cff69ccf0Proceso|r
-## Title-esMX:|cffffd200Deadly Boss Mods|r |cff69ccf0Proceso|r
-## Notes: Deadly Boss Mods
+## Title:|cffffe00a<|r|cffff7d0aDBM Core|r|cffffe00a>|r |cff69ccf0For PServers|r
+## Notes: DBM Edited by Cheno and Xeralol for Private Servers
 ## SavedVariablesPerCharacter: DBM_SavedOptions, DBT_SavedOptions
 ## LoadOnDemand: 0
 ## DefaultState: enabled
-## Author: Tandanu and Nitram
+## Author: Cheno, Xeralol
 ## X-Website: http://www.deadlybossmods.com
 localization.en.lua
 localization.de.lua

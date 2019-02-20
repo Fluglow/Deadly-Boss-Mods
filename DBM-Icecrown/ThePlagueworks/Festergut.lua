@@ -30,13 +30,16 @@ local timerVileGas			= mod:NewBuffActiveTimer(6, 71218, nil, mod:IsRanged())
 local timerGasSporeCD		= mod:NewNextTimer(40, 69279)		-- Every 40 seconds except after 3rd and 6th cast, then it's 50sec CD
 local timerPungentBlight	= mod:NewNextTimer(33, 71219)		-- 33 seconds after 3rd stack of inhaled
 local timerInhaledBlight	= mod:NewNextTimer(34, 71912)		-- 34 seconds'ish
-local timerGastricBloat		= mod:NewTargetTimer(100, 72551, nil, mod:IsTank() or mod:IsHealer())	-- 100 Seconds until expired
-local timerGastricBloatCD	= mod:NewCDTimer(11, 72551, nil, mod:IsTank() or mod:IsHealer()) 		-- 10 to 14 seconds
+local timerGastricBloat		= mod:NewTargetTimer(100, 72551, nil, mod:IsTank() or mod:IsHealer() or mod:IsHunter())	-- 100 Seconds until expired
+local timerGastricBloatCD	= mod:NewCDTimer(11, 72551, nil, mod:IsTank() or mod:IsHealer() or mod:IsHunter()) 		-- 10 to 14 seconds
 
 local berserkTimer			= mod:NewBerserkTimer(300)
 
 local warnGoo				= mod:NewSpellAnnounce(72549, 4)
 local timerGooCD			= mod:NewNextTimer(10, 72549)
+
+local countdownBloat		= mod:NewCountdown(72551, "PlayCountdownOnGastricBloat", mod:IsHunter() or mod:IsTank())
+local countdownGoo			= mod:NewCountdown(72549, "PlayCountdownOnMalleableGoo", not (mod:IsHunter() or mod:IsTank()))
 
 mod:AddBoolOption("RangeFrame", mod:IsRanged())
 mod:AddBoolOption("SetIconOnGasSpore", true)
@@ -97,6 +100,7 @@ function mod:OnCombatStart(delay)
 	end
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 		timerGooCD:Start(13-delay)
+		countdownGoo:Schedule((13-delay)-3, 3)
 	end
 end
 
@@ -126,8 +130,10 @@ function mod:OnSync(event, arg)
 			specWarnGoo:Show()
 			if mod:IsDifficulty("heroic25") then
 				timerGooCD:Start()
+				countdownGoo:Schedule(10-3, 3)
 			else
 				timerGooCD:Start(30)--30 seconds in between goos on 10 man heroic
+				countdownGoo:Schedule(30-5, 5)
 			end
 			lastGoo = time()
 		end
@@ -172,6 +178,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		warnGastricBloat:Show(args.spellName, args.destName, args.amount or 1)
 		timerGastricBloat:Start(args.destName)
 		timerGastricBloatCD:Start()
+		countdownBloat:Schedule(11-3, 3)
 		if args:IsPlayer() and (args.amount or 1) >= 9 then
 			specWarnGastricBloat:Show(args.amount)
 		end
