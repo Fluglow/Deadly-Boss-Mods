@@ -110,6 +110,9 @@ local warned_preP2 = false
 local warned_preP3 = false
 local warnedValkyrGUIDs = {}
 local LKTank
+local plagueWarned = false
+local plagueTarget = ""
+
 
 function mod:OnCombatStart(delay)
 	phase = 0
@@ -502,9 +505,9 @@ do
 			end
 		end
 		
-		if count < 11 then
-		 print("count register update works")
-		 count = count + 1
+		if count < 11 and (self:IsDifficulty("normal25", "heroic25") or self:IsDifficulty("normal10", "heroic10")) and UnitDebuff("player", "Necrotic Plague") == true then
+			print("count register update works")
+			count = count + 1
 		end
 	end, 1)
 end
@@ -664,11 +667,26 @@ function mod:OnSync(msg, target)
 	end
 end
 
-local count = 0
 
-function mod:OnUpdate(args)
-	if count < 11 then
-		print("OnUpdate works")
-		count = count + 1
+f = CreateFrame("Frame")
+f:SetScript("OnUpdate",function(args)
+	for n = 1, 40 do
+		local plagueString = UnitDebuff("raid" .. n, "Necrotic Plague")
+		local guid, UnitName = UnitGUID("player"), UnitName("player")
+		local name = GetRaidRosterInfo(n)
+		
+		if plagueString == "Necrotic Plague" and plagueWarned == false then --and GetTime() - lastPlagueCast > 2 then	
+			plagueWarned = true
+			warnNecroticPlague:Show(name)
+			plagueTarget = name
+			if name == UnitName then
+				specWarnNecroticPlague:Show()
+			end
+			if mod.Options.NecroticPlagueIcon then
+				mod:SetIcon(name, 5, 5)
+			end
+		elseif plagueString == nil and plagueWarned == true and plagueTarget == name then
+			plagueWarned = false
+		end
 	end
-end
+end)
