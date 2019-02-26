@@ -620,22 +620,9 @@ function barPrototype:Update(elapsed)
 		end
 		self.ftimer = self.ftimer + elapsed
 	end
-	if self.moving == "move" and self.moveElapsed <= 0.5 then
-		self.moveElapsed = self.moveElapsed + elapsed
-		local newX = self.moveOffsetX + (obj.options.BarXOffset - self.moveOffsetX) * (self.moveElapsed / 0.5)
-		local newY
-		if self.owner.options.ExpandUpwards then
-			newY = self.moveOffsetY + 40 + (obj.options.BarYOffset - self.moveOffsetY) * (self.moveElapsed / 0.5)
-		else
-			newY = self.moveOffsetY + (-obj.options.BarYOffset - self.moveOffsetY) * (self.moveElapsed / 0.5)
-		end
-		frame:ClearAllPoints()
-		frame:SetPoint(self.movePoint, self.moveAnchor, self.moveRelPoint, newX, newY)
-	elseif self.moving == "move" then
+	if self.moving == "move" then
 		self.moving = nil
 		self:SetPosition()
-	elseif self.moving == "enlarge" and self.moveElapsed <= 1 then
-		self:AnimateEnlarge(elapsed)
 	elseif self.moving == "enlarge" then
 		self.moving = nil
 		self.enlarged = true

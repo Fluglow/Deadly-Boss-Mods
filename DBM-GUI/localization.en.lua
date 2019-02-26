@@ -5,6 +5,7 @@ local L = DBM_GUI_Translations
 L.MainFrame = "Deadly Boss Mods"
 
 L.TranslationBy 			= "Nitram, Tandanu & Tennberg"
+L.ImprovedBy                = "Improved for Dalaran-WoW by Cheno & Xeralol"
 
 L.TabCategory_Options	 	= "General Options"
 L.TabCategory_WOTLK 		= "Wrath of the Lich King"

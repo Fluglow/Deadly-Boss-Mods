@@ -34,6 +34,8 @@ local timerBoilingBlood		= mod:NewNextTimer(15.5, 72441)
 local timerBloodNova		= mod:NewNextTimer(20, 73058)
 local timerCallBloodBeast	= mod:NewNextTimer(40, 72173)
 
+local countdownBloodBeast	= mod:NewCountdown(72173, "PlayCountdownOnCallBloodBeast", true)
+
 local enrageTimer			= mod:NewBerserkTimer(480)
 
 mod:AddBoolOption("RangeFrame", mod:IsRanged())
@@ -67,6 +69,7 @@ function mod:OnCombatStart(delay)
 	print("Delay")
 	print(delay)
 	timerCallBloodBeast:Start(30) --was "-delay"
+	countdownBloodBeast:Schedule(30-5, 5)
 	warnAddsSoon:Schedule(20)  --was "30-delay"
 	timerBloodNova:Start(-delay)
 	timerRuneofBlood:Start(-delay)
@@ -141,6 +144,7 @@ do
 				warnAdds:Show()
 				warnAddsSoon:Schedule(30)
 				timerCallBloodBeast:Start()
+				countdownBloodBeast:Schedule(40-5, 5)
 				lastBeast = time()
 				if self.Options.BeastIcons then
 					resetBeastIconState()

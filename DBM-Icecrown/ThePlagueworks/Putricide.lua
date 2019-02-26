@@ -54,6 +54,9 @@ local timerMutatedPlagueCD			= mod:NewCDTimer(10, 72451)				-- 10 to 11
 local timerUnboundPlagueCD			= mod:NewNextTimer(60, 72856)
 local timerUnboundPlague			= mod:NewBuffActiveTimer(12, 72856)		-- Heroic Ability: we can't keep the debuff 60 seconds, so we have to switch at 12-15 seconds. Otherwise the debuff does to much damage!
 
+local countdownUnboundPlague		= mod:NewCountdown(72856, "PlayCountdownOnUnboundPlague", false)
+local countdownUnstableExperiment   = mod:NewCountdown(70351, "PlayCountdownOnUnstableExperiment", true)
+
 -- buffs from "Drink Me"
 local timerMutatedSlash				= mod:NewTargetTimer(20, 70542)
 local timerRegurgitatedOoze			= mod:NewTargetTimer(20, 70539)
@@ -81,12 +84,14 @@ function mod:OnCombatStart(delay)
 	berserkTimer:Start(-delay)
 	timerSlimePuddleCD:Start(10-delay)
 	timerUnstableExperimentCD:Start(30-delay)
+    countdownUnstableExperiment:Schedule((30-delay)-5, 5)
 	warnUnstableExperimentSoon:Schedule(25-delay)
 	warned_preP2 = false
 	warned_preP3 = false
 	phase = 1
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 		timerUnboundPlagueCD:Start(10-delay)
+		countdownUnboundPlague:Schedule((10-delay)-5, 5)
 	end
 end
 
@@ -133,23 +138,28 @@ function mod:SPELL_CAST_START(args)
 		warnUnstableExperimentSoon:Cancel()
 		warnUnstableExperiment:Show()
 		timerUnstableExperimentCD:Start()
+        countdownUnstableExperiment:Schedule(38-5, 5)
 		warnUnstableExperimentSoon:Schedule(33)
 	elseif args:IsSpellID(71617) then				--Tear Gas, normal phase change trigger
 		warnTearGas:Show()
 		warnUnstableExperimentSoon:Cancel()
 		timerUnstableExperimentCD:Cancel()
+        countdownUnstableExperiment:Cancel()
 		timerMalleableGooCD:Cancel()
 		timerSlimePuddleCD:Cancel()
 		timerChokingGasBombCD:Cancel()
 		timerUnboundPlagueCD:Cancel()
+		countdownUnboundPlague:Cancel()
 	elseif args:IsSpellID(72842, 72843) then		--Volatile Experiment (heroic phase change begin)
 		warnVolatileExperiment:Show()
 		warnUnstableExperimentSoon:Cancel()
 		timerUnstableExperimentCD:Cancel()
+        countdownUnstableExperiment:Cancel()
 		timerMalleableGooCD:Cancel()
 		timerSlimePuddleCD:Cancel()
 		timerChokingGasBombCD:Cancel()
 		timerUnboundPlagueCD:Cancel()
+		countdownUnboundPlague:Cancel()
 	elseif args:IsSpellID(72851, 72852) then		--Create Concoction (Heroic phase change end)
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			self:ScheduleMethod(40, "NextPhase")	--May need slight tweaking +- a second or two
@@ -171,11 +181,13 @@ function mod:NextPhase()
 	if phase == 2 then
 		warnUnstableExperimentSoon:Schedule(15)
 		timerUnstableExperimentCD:Start(20)
+        countdownUnstableExperiment:Schedule(20-5, 5)
 		timerSlimePuddleCD:Start(10)
 		timerMalleableGooCD:Start(5)
 		timerChokingGasBombCD:Start(15)
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			timerUnboundPlagueCD:Start(50)
+			countdownUnboundPlague:Schedule(50-5, 5)
 		end
 	elseif phase == 3 then
 		timerSlimePuddleCD:Start(15)
@@ -183,6 +195,7 @@ function mod:NextPhase()
 		timerChokingGasBombCD:Start(12)
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			timerUnboundPlagueCD:Start(50)
+			countdownUnboundPlague:Schedule(50-5, 5)
 		end
 	end
 end
@@ -202,6 +215,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerChokingGasBombCD:Start()
 	elseif args:IsSpellID(72855, 72856, 70911) then
 		timerUnboundPlagueCD:Start()
+		countdownUnboundPlague:Schedule(60-5, 5)
 	elseif args:IsSpellID(72615, 72295, 74280, 74281) then
 		warnMalleableGoo:Show()
 		specWarnMalleableGooCast:Show()
@@ -257,13 +271,14 @@ function mod:SPELL_AURA_APPLIED(args)
 			specWarnGasVariable:Show()
 		end
 	elseif args:IsSpellID(72855, 72856, 70911) then	 -- Unbound Plague
-		warnUnboundPlague:Show(args.destName)
+		-- warnUnboundPlague:Show(args.destName)
 		if self.Options.UnboundPlagueIcon then
 			self:SetIcon(args.destName, 5, 20)
 		end
 		if args:IsPlayer() then
 			specWarnUnboundPlague:Show()
 			timerUnboundPlague:Start()
+			countdownUnboundPlague:Schedule(9.5-5, 5)
 			if self.Options.YellOnUnbound then
 				SendChatMessage(L.YellUnbound, "SAY")
 			end
@@ -300,6 +315,9 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	elseif args:IsSpellID(72855, 72856, 70911) then 						-- Unbound Plague
 		timerUnboundPlague:Stop(args.destName)
+        if args:IsPlayer() then
+            countdownUnboundPlague:Cancel()
+        end
 		if self.Options.UnboundPlagueIcon then
 			self:SetIcon(args.destName, 0)
 		end
