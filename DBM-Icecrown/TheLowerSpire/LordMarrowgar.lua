@@ -24,6 +24,7 @@ local specWarnWhirlwind		= mod:NewSpecialWarningRun(69076)
 
 local timerBoneSpike		= mod:NewCDTimer(18, 69057)
 local timerWhirlwindCD		= mod:NewCDTimer(90, 69076)
+local countdownBonestorm	= mod:NewCountdown(69076, "PlayCountdownOnBonestorm", true)
 local timerWhirlwind		= mod:NewBuffActiveTimer(20, 69076)
 local timerBoned			= mod:NewAchievementTimer(8, 4610, "AchievementBoned")
 
@@ -44,6 +45,7 @@ end
 function mod:OnCombatStart(delay)
 	preWarnWhirlwind:Schedule(40-delay)
 	timerWhirlwindCD:Start(45-delay)
+	countdownBonestorm:Schedule((45-delay)-5, 5)
 	timerBoneSpike:Start(15-delay)
 	berserkTimer:Start(-delay)
 	table.wipe(impaleTargets)
@@ -53,6 +55,7 @@ function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(69076) then						-- Bone Storm (Whirlwind)
 		specWarnWhirlwind:Show()
 		timerWhirlwindCD:Start()
+		countdownBonestorm:Schedule(90-5, 5)
 		preWarnWhirlwind:Schedule(85)
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			timerWhirlwind:Show(30)						-- Approx 30seconds on heroic

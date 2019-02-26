@@ -138,6 +138,7 @@ DBM_CORE_AUTO_ANNOUNCE_OPTIONS = {
 	target = "Ziel von |cff71d5ff|Hspell:%d|h%s|h|r ansagen",
 	spell = "Zeige Warnung für |cff71d5ff|Hspell:%d|h%s|h|r",
 	cast = "Zeige Warnung wenn |cff71d5ff|Hspell:%d|h%s|h|r gezaubert wird",
+	countdown = "Spiele Countdown-Sound für |cff71d5ff|Hspell:%d|h%s|h|r",
 	soon = prewarnOption,
 	prewarn = prewarnOption,
 	phase = "Zeige Warnung für Phase %d"
@@ -173,7 +174,7 @@ DBM_CORE_AUTO_SPEC_WARN_TEXTS = {
 
 DBM_CORE_AUTO_ICONS_OPTION_TEXT		= "Setze Zeichen auf Ziele von $spell:%d"
 DBM_CORE_AUTO_SOUND_OPTION_TEXT		= "Spiele Sound bei $spell:%d"
-
+DBM_CORE_AUTO_COUNTDOWN_OPTION_TEXT	= "Spiele Countdown bei $spell:%d"
 
 -- New special warnings
 DBM_CORE_MOVE_SPECIAL_WARNING_BAR	= "Spezialwarnung beweglich"

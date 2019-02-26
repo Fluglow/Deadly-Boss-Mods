@@ -359,7 +359,7 @@
 						</Anchor>
 					</Anchors>
 				</Texture>
-				<FontString name="$parentHeaderText" inherits="GameFontNormal" text="Deadly Boss Mods">
+				<FontString name="$parentHeaderText" inherits="GameFontNormal" text="Deadly Boss Mods [Improved for PServers]">
 					<Anchors>
 						<Anchor point="TOP" relativeTo="$parentHeader">
 							<Offset>

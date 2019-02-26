@@ -43,9 +43,11 @@ local specWarnFrostbolt				= mod:NewSpecialWarningInterupt(72007, false)
 local specWarnVengefulShade			= mod:NewSpecialWarning("SpecWarnVengefulShade", not mod:IsTank())
 
 local timerAdds						= mod:NewTimer(60, "TimerAdds", 61131)
+local countdownAdds					= mod:NewCountdown(61131, "PlayCountdownOnSummonAdds", false)
 local timerDominateMind				= mod:NewBuffActiveTimer(12, 71289)
 local timerDominateMindCD			= mod:NewCDTimer(40, 71289)
 local timerSummonSpiritCD			= mod:NewCDTimer(10, 71426, nil, false)
+local countdownSummonSpirits		= mod:NewCountdown(71426, "PlayCountdownOnSummonSpirits", true)
 local timerFrostboltCast			= mod:NewCastTimer(4, 72007)
 local timerTouchInsignificance		= mod:NewTargetTimer(30, 71204, nil, mod:IsTank() or mod:IsHealer())
 
@@ -72,6 +74,7 @@ function mod:OnCombatStart(delay)
 	end		
 	berserkTimer:Start(-delay)
 	timerAdds:Start(7)
+	countdownAdds:Schedule(7-5, 5)
 	warnAddsSoon:Schedule(4)			-- 3sec pre-warning on start
 	self:ScheduleMethod(7, "addsTimer")
 	if not mod:IsDifficulty("normal10") then
@@ -112,15 +115,18 @@ end
 
 function mod:addsTimer()
 	timerAdds:Cancel()
+	countdownAdds:Cancel()
 	warnAddsSoon:Cancel()
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 		warnAddsSoon:Schedule(40)	-- 5 secs prewarning
 		self:ScheduleMethod(45, "addsTimer")
 		timerAdds:Start(45)
+		countdownAdds:Schedule(45-5, 5)
 	else
 		warnAddsSoon:Schedule(55)	-- 5 secs prewarning
 		self:ScheduleMethod(60, "addsTimer")
 		timerAdds:Start()
+		countdownAdds:Schedule(60-5, 5)
 	end
 end
 
@@ -193,6 +199,7 @@ function mod:SPELL_AURA_REMOVED(args)
 		warnPhase2:Show()
 		if mod:IsDifficulty("normal10") or mod:IsDifficulty("normal25") then
 			timerAdds:Cancel()
+			countdownAdds:Cancel()
 			warnAddsSoon:Cancel()
 			self:UnscheduleMethod("addsTimer")
 		end
@@ -233,6 +240,7 @@ function mod:SPELL_SUMMON(args)
 		if time() - lastSpirit > 5 then
 			warnSummonSpirit:Show()
 			timerSummonSpiritCD:Start()
+			countdownSummonSpirits:Schedule(10-3, 3)
 			lastSpirit = time()
 			mod:Schedule(0.5, checkSpiritTarget)
 		end

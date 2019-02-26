@@ -1,1 +1,50 @@
-# Deadly-Boss-Mods
+# Deadly-Boss-Mods for Dalaran WoW
+
+in the following you'll find an edited Version of DBM with a Voice Countdown feature included.
+
+The voice countdown can be enabled for several abilities in ICC and will play a countdown sound (5,4,3,2,1)
+when something important is about to happen.
+
+## Lord Marrowgar:
+- Plays a countdown when Bonestorm is about to happen
+
+## Lady Deathwisper:
+- Plays a countdown when she is about to Summon Spirits
+- (Optional:) Plays a countdown sound when adds are about to spawn
+
+## Deathbringer Saurfang:
+- Plays a countdown when the blood beasts are about to spawn
+
+## Festergut:
+- Plays a countdown when Putricide is about to throw Goo
+- (Optional for Hunters:) Plays a countdown when to taunt the boss to get Gastric Bloat Stacks
+
+## Professor Putricide:
+- Plays a countdown when Unbound Plague is about to happen
+- Plays a countdown when you should pass your Unbound Plague to someone else
+
+## Blood Prince Council:
+- Plays a countdown when Shock Vortex is about to happen
+- (Optional:) Plays a countdown sound when they are about to switch targets
+
+## Blood Queen Lana'thel:
+- Plays a countdown when you need to bite someone
+
+## Sindragosa:
+Plays a countdown when Blistering Cold is about to happen
+
+## The Lich King:
+Here the default sound settings depend on your role in the raid.
+Phase 1:
+- Hunters and Tanks will hear a countdown for the Enrage on the Shambling Horror.
+- Healers will hear a countdown for Infest.
+- The rest of the DPS will hear a countdown for Shadow Traps.
+
+Transition:
+- Hunters, Rogues, and Tanks will hear a countdown for the Raging Spiris so they can Misdirect the Tanks.
+
+Phase 2:
+- DPS and Tanks will hear a countdown for Defile.
+- Healers will keep hearing countdowns for Infests.
+
+Optionally you can enable countdowns on Soul Reaper and Summon Valkyrs.

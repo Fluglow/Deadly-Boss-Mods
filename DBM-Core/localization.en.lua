@@ -137,6 +137,7 @@ DBM_CORE_AUTO_ANNOUNCE_OPTIONS = {
 	target = "Announce |cff71d5ff|Hspell:%d|h%s|h|r targets",
 	spell = "Show warning for |cff71d5ff|Hspell:%d|h%s|h|r",
 	cast = "Show warning when |cff71d5ff|Hspell:%d|h%s|h|r is being cast",
+	countdown = "Play countdown sound for |cff71d5ff|Hspell:%d|h%s|h|r",
 	soon = prewarnOption,
 	prewarn = prewarnOption,
 	phase = "Announce Phase %d"
@@ -146,34 +147,6 @@ DBM_CORE_AUTO_ANNOUNCE_OPTIONS = {
 -- Auto-generated Special Warning Localizations
 DBM_CORE_AUTO_SPEC_WARN_OPTIONS = {
 	spell 		= "Show special warning for $spell:%d",
-	dispel 		= "Show special warning to dispel/spellsteal \n $spell:%d",
-	interupt	= "Show special warning to interupt $spell:%d",
-	you 		= "Show special warning when you are affected by \n $spell:%d",
-	target 		= "Show special warning when someone is affected by \n $spell:%d",
-	close 		= "Show special warning when someone close to you is \n affected by $spell:%d",
-	move 		= "Show special warning when you are affected by \n $spell:%d",
-	run 		= "Show special warning for $spell:%d",
-	cast 		= "Show special warning for $spell:%d cast",
-	stack 		= "Show special warning for >=%d stacks of \n $spell:%d"
-}
-
---  Special Warning Localizations for Halion 40
-DBM_CORE_AUTO_SPEC_WARN_OPTIONS_HALION_40 = {
-	spell 		= "Show special warning for $spell:%d 40%%",
-	dispel 		= "Show special warning to dispel/spellsteal \n $spell:%d",
-	interupt	= "Show special warning to interupt $spell:%d",
-	you 		= "Show special warning when you are affected by \n $spell:%d",
-	target 		= "Show special warning when someone is affected by \n $spell:%d",
-	close 		= "Show special warning when someone close to you is \n affected by $spell:%d",
-	move 		= "Show special warning when you are affected by \n $spell:%d",
-	run 		= "Show special warning for $spell:%d",
-	cast 		= "Show special warning for $spell:%d cast",
-	stack 		= "Show special warning for >=%d stacks of \n $spell:%d"
-}
-
---  Special Warning Localizations for Halion 30
-DBM_CORE_AUTO_SPEC_WARN_OPTIONS_HALION_30 = {
-	spell 		= "Show special warning for $spell:%d 30%%",
 	dispel 		= "Show special warning to dispel/spellsteal \n $spell:%d",
 	interupt	= "Show special warning to interupt $spell:%d",
 	you 		= "Show special warning when you are affected by \n $spell:%d",
@@ -201,7 +174,7 @@ DBM_CORE_AUTO_SPEC_WARN_TEXTS = {
 
 DBM_CORE_AUTO_ICONS_OPTION_TEXT		= "Set icons on $spell:%d targets"
 DBM_CORE_AUTO_SOUND_OPTION_TEXT		= "Play sound on $spell:%d"
-
+DBM_CORE_AUTO_COUNTDOWN_OPTION_TEXT	= "Play countdown on $spell:%d"
 
 -- New special warnings
 DBM_CORE_MOVE_SPECIAL_WARNING_BAR	= "Special warning movable"

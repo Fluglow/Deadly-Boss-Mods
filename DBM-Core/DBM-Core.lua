@@ -42,10 +42,10 @@
 --  Globals/Default Options  --
 -------------------------------
 DBM = {
-	Revision = ("$Revision: 4442 $"):sub(12, -3),
-	Version = "4.52",
-	DisplayVersion = "4.52", -- the string that is shown as version
-	ReleaseRevision = 4442 -- the revision of the latest stable version that is available (for /dbm ver2)
+	Revision = ("$Revision: 9007 $"):sub(12, -3),
+	Version = "9.00",
+	DisplayVersion = "9.00-Dalaran", -- the string that is shown as version
+	ReleaseRevision = 9007 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
@@ -337,15 +337,15 @@ do
 		end
 	end
 	
-	ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function(frame, event, message, sender, ...)
-		if message:find("songPlay") and songPlayed == 0 then
-			PlaySoundFile("Sound/Music/GlueScreenMusic/BCCredits_Lament_of_the_Highborne.mp3", "master")
-			songPlayed = 1
-			return true -- hide this message
-		else 
+	--ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function(frame, event, message, sender, ...)
+	--	if message:find("songPlay") and songPlayed == 0 then
+	--		PlaySoundFile("Sound/Music/GlueScreenMusic/BCCredits_Lament_of_the_Highborne.mp3", "master")
+	--		songPlayed = 1
+	--		return true -- hide this message
+	--	else 
 			
-        end
-	end)
+    --    end
+	--end)
 
 	DBM:RegisterEvents("ADDON_LOADED")
 
@@ -910,6 +910,13 @@ do
 			sendSync("DBMv4-Pizza", ("%s\t%s"):format(time, text))
 		end
 		if sender then DBM:ShowPizzaInfo(text, sender) end
+		if text == DBM_CORE_TIMER_PULL then
+			if time > 5 then self:Schedule(time - 5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\5.ogg") end
+			if time > 4 then self:Schedule(time - 4, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\4.ogg") end
+			if time > 3 then self:Schedule(time - 3, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\3.ogg") end
+			if time > 2 then self:Schedule(time - 2, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\2.ogg") end
+			if time > 1 then self:Schedule(time - 1, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\1.ogg") end
+		end
 	end
 
 	function DBM:AddToPizzaIgnore(name)
@@ -1088,18 +1095,20 @@ do
 			local playerWithHigherVersionPromoted = false
 			for i = 1, GetNumRaidMembers() do
 				local name, rank, subgroup, _, _, fileName = GetRaidRosterInfo(i)
-				if (not raid[name]) and inRaid then
-					fireEvent("raidJoin", name)
-				end
-				raid[name] = raid[name] or {}
-				raid[name].name = name
-				raid[name].rank = rank
-				raid[name].subgroup = subgroup
-				raid[name].class = fileName
-				raid[name].id = "raid"..i
-				raid[name].updated = true
-				if not playerWithHigherVersionPromoted and rank >= 1 and raid[name].version and raid[name].version > tonumber(DBM.Version) then
-					playerWithHigherVersionPromoted = true
+				if name then
+					if (not raid[name]) and inRaid then
+						fireEvent("raidJoin", name)
+					end
+					raid[name] = raid[name] or {}
+					raid[name].name = name
+					raid[name].rank = rank
+					raid[name].subgroup = subgroup
+					raid[name].class = fileName
+					raid[name].id = "raid"..i
+					raid[name].updated = true
+					if not playerWithHigherVersionPromoted and rank >= 1 and raid[name].version and raid[name].version > tonumber(DBM.Version) then
+						playerWithHigherVersionPromoted = true
+					end
 				end
 			end
 			enableIcons = not playerWithHigherVersionPromoted
@@ -2581,6 +2590,9 @@ function bossModPrototype:IsHealer()
 			or (select(2, UnitClass("player")) == "PRIEST" and select(3, GetTalentTabInfo(3)) < 51)
 end
 
+function bossModPrototype:IsHunter()
+    return select(2, UnitClass("player")) == "HUNTER"
+end
 
 -------------------------
 --  Boss Health Frame  --
@@ -2780,6 +2792,48 @@ do
 	end	
 end
 
+--------------------
+--  Countdown Object  --
+--------------------
+do
+    local countdownPrototype = {}
+    local mt = { __index = countdownPrototype }
+    function bossModPrototype:NewCountdown(spellId, optionName, optionDefault)
+        self.numSounds = self.numSounds and self.numSounds + 1 or 1
+        local obj = setmetatable(
+            {
+                option = optionName or DBM_CORE_AUTO_COUNTDOWN_OPTION_TEXT:format(spellId),
+                mod = self,
+            },
+            mt
+        )
+        if optionName == false then
+            obj.option = nil
+        else
+            self:AddBoolOption(obj.option, optionDefault, "misc")
+        end
+        return obj
+    end
+
+    function countdownPrototype:Play(counter)
+        if not counter then counter = 5 end
+        if counter <= 0 then return end
+
+        if not self.option or self.mod.Options[self.option] then
+            PlaySoundFile("Interface\\AddOns\\DBM-Core\\sounds\\new\\"..counter..".ogg")
+            self:Schedule(1, counter - 1)
+        end
+    end
+
+    function countdownPrototype:Schedule(t, ...)
+        return schedule(t, self.Play, self.mod, self, ...)
+    end
+
+    function countdownPrototype:Cancel(...)
+        return unschedule(self.Play, self.mod, self, ...)
+    end 
+end
+
 ------------------------------
 --  Special Warning Object  --
 ------------------------------
@@ -2890,41 +2944,6 @@ do
 			self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(spellId)
 		end
 		return obj
-	end
-	
-	local function newSpecialWarningHalion(self, announceType, spellId, percentage, stacks, optionDefault, optionName, noSound, runSound)
-		spellName = GetSpellInfo(spellId) or "unknown"
-		local text = "Corporeality "..percentage
-		local obj = setmetatable( -- todo: fix duplicate code
-			{
-				text = text,
-				announceType = announceType,
-				option = optionName or text,
-				mod = self,
-				sound = not noSound,
-			},
-			mt
-		)
-		if optionName == false then
-			obj.option = nil
-		else
-			self:AddBoolOption(optionName or text, true, "announce")		-- todo cleanup core code from that indexing type using options[text] is very bad!!! ;)
-		end
-		table.insert(self.specwarns, obj)
-		if announceType == "stack" then
-			self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(stacks or 3, spellId)
-		else
-			if spellId == 74832 then
-				self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS_HALION_40[announceType]:format(spellId)
-			elseif spellId == 74833 then
-				self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS_HALION_30[announceType]:format(spellId)
-			end
-		end
-		return obj
-	end
-	
-	function bossModPrototype:NewSpecialWarningSpellCorporeality(text, percentage, optionDefault, ...)
-		return newSpecialWarningHalion(self, "spell", text, percentage, nil, optionDefault, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarningSpell(text, optionDefault, ...)

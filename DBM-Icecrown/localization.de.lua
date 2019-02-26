@@ -121,7 +121,8 @@ L:SetWarningLocalization{
 L:SetOptionLocalization{
 	WarnImpale			= "Verkünde Ziele von $spell:69062",
 	AchievementBoned	= "Zeige Timer für Erfolg 'Entknöchert'",
-	SetIconOnImpale		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69062)
+	SetIconOnImpale		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69062),
+	PlayCountdownOnBonestorm = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(69076, GetSpellInfo(69076) or "unknown")
 }
 
 -------------------------
@@ -153,7 +154,9 @@ L:SetOptionLocalization{
 	WarnTouchInsignificance		= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(71204, GetSpellInfo(71204) or "unknown"),	
 	SetIconOnDominateMind		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(71289),
 	SetIconOnDeformedFanatic	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70900),
-	SetIconOnEmpoweredAdherent	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70901)
+	SetIconOnEmpoweredAdherent	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70901),
+	PlayCountdownOnSummonAdds	= "Spiele Countdown-Sound wenn die Adds beschworen werden",
+	PlayCountdownOnSummonSpirits = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(71426, GetSpellInfo(71426) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -223,7 +226,8 @@ L:SetOptionLocalization{
 	BoilingBloodIcons		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(72441),
 	RangeFrame				= "Zeige Abstandsfenster (12 m)",
 	RunePowerFrame			= "Zeige Boss-Leben und Leiste für $spell:72371",
-	BeastIcons				= "Setze Zeichen auf Blutbestien"
+	BeastIcons				= "Setze Zeichen auf Blutbestien",
+	PlayCountdownOnCallBloodBeast = "Spiele Countdown-Sound wenn die Blutbestien beschworen werden"
 }
 
 L:SetMiscLocalization{
@@ -251,7 +255,9 @@ L:SetOptionLocalization{
 	RangeFrame			= "Zeige Abstandsfenster (8 m)",
 	WarnGastricBloat	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.spell:format(72551, GetSpellInfo(72551) or "unknown"),	
 	SetIconOnGasSpore	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69279),
-	AnnounceSporeIcons	= "Verkünde Symbole für Ziele von $spell:69279 im Raidchat\n(benötigt aktivierte Ankündigungen und (L)- oder (A)-Status)"
+	AnnounceSporeIcons	= "Verkünde Symbole für Ziele von $spell:69279 im Raidchat\n(benötigt aktivierte Ankündigungen und (L)- oder (A)-Status)",
+	PlayCountdownOnGastricBloat = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72551, GetSpellInfo(72551) or "unknown"),
+	PlayCountdownOnMalleableGoo = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72549, GetSpellInfo(72549) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -325,7 +331,9 @@ L:SetOptionLocalization{
 	YellOnMalleableGoo			= "Schreie bei $spell:72295",	
 	YellOnUnbound				= "Schreie bei $spell:72856",
 	SpecWarnUnboundPlague		= "Zeige Spezialwarnung für Übertragung von $spell:72856",
-	SpecWarnNextPlageSelf		= "Zeige Spezialwarnung wenn du in der Nähe des Ziels von $spell:72856 bist"
+	SpecWarnNextPlageSelf		= "Zeige Spezialwarnung wenn du in der Nähe des Ziels von $spell:72856 bist",
+	PlayCountdownOnUnboundPlague = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72856, GetSpellInfo(72856) or "unknown"),
+	PlayCountdownOnUnstableExperiment = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(70351, GetSpellInfo(70351) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -362,7 +370,9 @@ L:SetOptionLocalization{
 	SpecWarnVortexNear		= "Zeige Spezialwarnung für $spell:72037 in deiner Nähe",
 	EmpoweredFlameIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(72040),
 	ActivePrinceIcon		= "Setze Zeichen auf den machterfüllten Prinzen (Totenkopf)",
-	RangeFrame				= "Zeige Abstandsfenster (12 m)"
+	RangeFrame				= "Zeige Abstandsfenster (12 m)",
+	PlayCountdownOnTargetSwitch = "Spiele Countdown-Sound bei Zielwechsel",
+	PlayCountdownOnShockVortex = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72037, GetSpellInfo(72037) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -392,7 +402,8 @@ L:SetOptionLocalization{
 	SwarmingShadowsIcon		= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(71266),
 	BloodMirrorIcon			= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70838),
 	RangeFrame				= "Zeige Abstandsfenster (8 m)",
-	YellOnFrenzy			= "Schreie bei $spell:71474"
+	YellOnFrenzy			= "Schreie bei $spell:71474",
+	PlayCountdownOnEssence	= "Spiele Countdown-Sound wenn du jemand beißen\nmusst ($spell:71474)"
 }
 
 L:SetMiscLocalization{
@@ -471,7 +482,8 @@ L:SetOptionLocalization{
  	SetIconOnFrostBeacon	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(70126),
 	SetIconOnUnchainedMagic	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(69762),
 	ClearIconsOnAirphase	= "Entferne alle Zeichen vor der Luftphase",
-	RangeFrame				= "Zeige Abstandsfenster (10 m normal, 20 m heroisch)\n(zeigt nur Spieler mit Raidzeichen an)"
+	RangeFrame				= "Zeige Abstandsfenster (10 m normal, 20 m heroisch)\n(zeigt nur Spieler mit Raidzeichen an)",
+	PlayCountdownOnBlisteringCold = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(70123, GetSpellInfo(70123) or "unknown")
 }
 
 L:SetMiscLocalization{
@@ -527,7 +539,14 @@ L:SetOptionLocalization{
 	ValkyrIcon				= "Setze Zeichen auf Valkyren",
 	DefileArrow				= "Zeige Pfeil wenn $spell:72762 in deiner Nähe ist",
 	TrapArrow				= "Zeige Pfeil wenn $spell:73539 in deiner Nähe ist",
-	SpecWarnValkyrLow		= "Show special warning when Valkyr is below 55% HP"
+	SpecWarnValkyrLow		= "Show special warning when Valkyr is below 55% HP",
+	PlayCountdownOnInfest	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(73779, GetSpellInfo(73779) or "unknown"),
+	PlayCountdownOnShamblingEnrage = "Spiele Countdown-Sound für $spell:72143\ndes Torkelnden Schreckens",
+	PlayCountdownOnShadowTrap = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(73539, GetSpellInfo(73539) or "unknown"),
+	PlayCountdownOnDefile	= DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(72762, GetSpellInfo(72762) or "unknown"),
+	PlayCountdownOnRagingSpirits = "Spiele Countdown-Sound wenn $spell:69200 beschworen werden",
+	PlayCountdownOnValkyrs	= "Spiele Countdown-Sound wenn $spell:71844 beschworen werden",
+	PlayCountdownOnSoulreaper = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(73797, GetSpellInfo(73797) or "unknown")
 }
 
 L:SetMiscLocalization{

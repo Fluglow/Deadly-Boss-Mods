@@ -650,11 +650,14 @@ do
 				end
 			end
 		end
+<<<<<<< HEAD
 		
 		if count < 11 and (self:IsDifficulty("normal25", "heroic25") or self:IsDifficulty("normal10", "heroic10")) and UnitDebuff("player", "Necrotic Plague") == true then
 			print("count register update works")
 			count = count + 1
 		end
+=======
+>>>>>>> 799f1d6a774674b435fe1a92c55483c2279968f6
 	end, 1)
 end
 
@@ -829,6 +832,9 @@ function mod:OnSync(msg, target)
 		end
 	end
 end
+<<<<<<< HEAD
+
+
 f = CreateFrame("Frame")
 f:SetScript("OnUpdate",function(args)
 	for n = 1, 40 do
@@ -851,3 +857,5 @@ f:SetScript("OnUpdate",function(args)
 		end
 	end
 end)
+=======
+>>>>>>> 799f1d6a774674b435fe1a92c55483c2279968f6

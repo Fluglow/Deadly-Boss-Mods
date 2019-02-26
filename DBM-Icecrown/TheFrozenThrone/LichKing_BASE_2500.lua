@@ -1,19 +1,10 @@
-
--- Should have 6 CDs here always
-INFEST_ROTA = INFEST_ROTA or {"Lansher Sac","Danishcunt AM","Overhealbot Sac","Overhealbot AM","Luxxia Sac","Luxxia AM"}
-
-
-
-
-
-
 local mod	= DBM:NewMod("LichKing", "DBM-Icecrown", 5)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision(("$Revision: 4425 $"):sub(12, -3))
 mod:SetCreatureID(36597)
 mod:RegisterCombat("combat")
-mod:SetMinSyncRevision(3860)
+mod:SetMinSyncRevision(3913)
 mod:SetUsedIcons(2, 3, 4, 5, 6, 7, 8)
 
 mod:RegisterEvents(
@@ -78,127 +69,25 @@ local timerCombatStart		= mod:NewTimer(53.5, "TimerCombatStart", 2457)
 local timerPhaseTransition	= mod:NewTimer(62, "PhaseTransition", 72262)
 local timerSoulreaper	 	= mod:NewTargetTimer(5.1, 73797, nil, mod:IsTank() or mod:IsHealer())
 local timerSoulreaperCD	 	= mod:NewCDTimer(30.5, 73797, nil, mod:IsTank() or mod:IsHealer())
-local countdownSoulreaper	= mod:NewCountdown(73797, "PlayCountdownOnSoulreaper", false)
 local timerHarvestSoul	 	= mod:NewTargetTimer(6, 74325)
 local timerHarvestSoulCD	= mod:NewCDTimer(75, 74325)
 local timerInfestCD			= mod:NewCDTimer(22.5, 73779, nil, mod:IsHealer())
-local countdownInfest		= mod:NewCountdown(73779, "PlayCountdownOnInfest", mod:IsHealer())
 local timerNecroticPlagueCleanse = mod:NewTimer(5, "TimerNecroticPlagueCleanse", 73912, false)
 local timerNecroticPlagueCD	= mod:NewCDTimer(30, 73912)
 local timerDefileCD			= mod:NewCDTimer(32.5, 72762)
-local countdownDefile		= mod:NewCountdown(72762, "PlayCountdownOnDefile", not mod:IsHealer())
 local timerEnrageCD			= mod:NewCDTimer(20, 72143, nil, mod:IsTank() or mod:CanRemoveEnrage())
-local countdownEnrage		= mod:NewCountdown(72143, "PlayCountdownOnShamblingEnrage", mod:IsTank() or mod:CanRemoveEnrage())
 local timerShamblingHorror 	= mod:NewNextTimer(60, 70372)
 local timerDrudgeGhouls 	= mod:NewNextTimer(20, 70358)
 local timerRagingSpiritCD	= mod:NewCDTimer(22, 69200)
-local countdownRagingSpirits = mod:NewCountdown(69200, "PlayCountdownOnRagingSpirits", mod:IsTank() or mod:CanRemoveEnrage())
 local timerSummonValkyr 	= mod:NewCDTimer(45, 71844)
-local countdownValkyrs		= mod:NewCountdown(71844, "PlayCountdownOnValkyrs", false)
 local timerVileSpirit 		= mod:NewNextTimer(30.5, 70498)
 local timerTrapCD		 	= mod:NewCDTimer(15.5, 73539)
-local countdownShadowTrap	= mod:NewCountdown(73539, "PlayCountdownOnShadowTrap", not (mod:IsTank() or mod:IsHealer() or mod:CanRemoveEnrage()))
 local timerRestoreSoul 		= mod:NewCastTimer(40, 73650)
 local timerRoleplay			= mod:NewTimer(162, "TimerRoleplay", 72350)
 
 local berserkTimer			= mod:NewBerserkTimer(900)
 
 local soundDefile			= mod:NewSound(72762)
-
-
-
-
--- Just Average
-local jaWarningRaidCooldown = mod:NewAnnounce("%s", 1, "Interface\\Icons\\Spell_Nature_WispSplode")
-local jaTimerRaidCooldown   = mod:NewTimer(21.5, "%s")
-local jaSpecialWarningCD    = mod:NewSpecialWarning("%s")
-local jaSpecialWarningYouNext = mod:NewSpecialWarning("%s")
-
-local jaLastPaladin = 1
-
-local function jaGetNextPaladinForRaidCD()
-	if not INFEST_ROTA or #INFEST_ROTA == 0 then return "Unknown" end
-
-	local currentPaladin = INFEST_ROTA[jaLastPaladin]
-	jaLastPaladin = _G["mod"](jaLastPaladin, #INFEST_ROTA) + 1
-	return currentPaladin
-end
-
-local function jaBuildPaladinRotationFromString(string)
-    print("Received new infest rotation: " .. string)
-    INFEST_ROTA = { strsplit(",", string) }
-end
-
-local function jaBuildStringFromPaladinRotation()
-    local string = ""
-    for k,v in ipairs(INFEST_ROTA) do
-        string = string..v
-        if k ~= #INFEST_ROTA then
-            string = string..","
-        end
-    end
-    return string
-end
-
-function SendPaladinInfestRotation()
-    local infestRota = jaBuildStringFromPaladinRotation()
-    print("Sending infest rotation: " .. infestRota)
-    mod:SendSync("InfestRota", infestRota)
-end
-
-function mod:OnSync(msg, arg)
-    if msg == "InfestRota" then
-        jaBuildPaladinRotationFromString(arg)
-    end
-end
-
-local function jaBuildPaladinRotation()
-	table.wipe(INFEST_ROTA)
-
-	local currentCD = 0
-
-	for i=1,25 do
-		if #INFEST_ROTA >= 6 then break end
-
-		if select(2, UnitClass("raid"..i)) == "PALADIN" then
-			currentCD = _G["mod"](currentCD + 1, 2)
-
-			local cdName
-			if currentCD == 0 then
-				cdName = "Sac"
-			else
-				cdName = "AM"
-			end
-
-			local unitName = UnitName("raid"..i) or "Unknown"
-			INFEST_ROTA[#INFEST_ROTA+1] = unitName .. " " .. cdName
-		end
-	end
-
-	currentCD = 1
-
-	for i=1,25 do
-		if #INFEST_ROTA >= 6 then break end
-
-		if select(2, UnitClass("raid"..i)) == "PALADIN" then
-			currentCD = _G["mod"](currentCD + 1, 2)
-
-			local cdName
-			if currentCD == 0 then
-				cdName = "Sac"
-			else
-				cdName = "AM"
-			end
-
-			local unitName = UnitName("raid"..i) or "Unknown"
-			INFEST_ROTA[#INFEST_ROTA+1] = unitName .. " " .. cdName
-		end
-	end
-end
-
-
-
-
 
 mod:AddBoolOption("SpecWarnHealerGrabbed", mod:IsTank() or mod:IsHealer(), "announce")
 mod:AddBoolOption("DefileIcon")
@@ -221,9 +110,6 @@ local warned_preP2 = false
 local warned_preP3 = false
 local warnedValkyrGUIDs = {}
 local LKTank
-local plagueWarned = false
-local plagueTarget = ""
-
 
 function mod:OnCombatStart(delay)
 	phase = 0
@@ -233,9 +119,6 @@ function mod:OnCombatStart(delay)
 	LKTank = nil
 	self:NextPhase()
 	table.wipe(warnedValkyrGUIDs)
-
-	jaLastPaladin = 1
-	-- jaBuildPaladinRotation()
 end
 
 function mod:DefileTarget()
@@ -370,27 +253,18 @@ function mod:SPELL_CAST_START(args)
 		warnRemorselessWinter:Show()
 		timerPhaseTransition:Start()
 		timerRagingSpiritCD:Start(6)
-		countdownRagingSpirits:Schedule(6-5, 5)
 		warnShamblingSoon:Cancel()
 		timerShamblingHorror:Cancel()
 		timerDrudgeGhouls:Cancel()
 		timerSummonValkyr:Cancel()
-		countdownValkyrs:Cancel()
 		timerInfestCD:Cancel()
-		countdownInfest:Cancel()
 		timerNecroticPlagueCD:Cancel()
 		timerTrapCD:Cancel()
-		countdownShadowTrap:Cancel()
 		timerDefileCD:Cancel()
-		countdownDefile:Cancel()
 		warnDefileSoon:Cancel()
-
-		jaTimerRaidCooldown:Cancel()
-		jaSpecialWarningCD:Cancel()
 	elseif args:IsSpellID(72262) then -- Quake (phase transition end)
 		warnQuake:Show()
 		timerRagingSpiritCD:Cancel()
-		countdownRagingSpirits:Cancel()
 		self:NextPhase()
 	elseif args:IsSpellID(70372) then -- Shambling Horror
 		warnShamblingSoon:Cancel()
@@ -407,17 +281,6 @@ function mod:SPELL_CAST_START(args)
 		warnInfest:Show()
 		specWarnInfest:Show()
 		timerInfestCD:Start()
-		countdownInfest:Schedule(22.5-5, 5)
-
-		local nextPal = jaGetNextPaladinForRaidCD()
-		jaWarningRaidCooldown:Show(nextPal .. " next!")
-		jaTimerRaidCooldown:Start(nextPal)
-
-		local paladin,cd = strsplit(" ", nextPal)
-		if UnitName("player") == paladin then
-			jaSpecialWarningYouNext:Show("You are next!")
-			jaSpecialWarningCD:Schedule(21.5, "Use " .. cd .. " now!")
-		end
 	elseif args:IsSpellID(72762) then -- Defile
 		if self.Options.LKBugWorkaround then
 			self:ScheduleMethod(0.1, "OldDefileTarget")
@@ -427,10 +290,8 @@ function mod:SPELL_CAST_START(args)
 		warnDefileSoon:Cancel()
 		warnDefileSoon:Schedule(27)
 		timerDefileCD:Start()
-		countdownDefile:Schedule(32.5-5, 5)
 	elseif args:IsSpellID(73539) then -- Shadow Trap (Heroic)
 		timerTrapCD:Start()
-		countdownShadowTrap:Schedule(15.5-5, 5)
 		if self.Options.LKBugWorkaround then
 			self:ScheduleMethod(0.01, "OldTrapTarget")
 			self:ScheduleMethod(0.02, "OldTrapTarget")
@@ -457,17 +318,12 @@ function mod:SPELL_CAST_START(args)
 	elseif args:IsSpellID(73650) then -- Restore Soul (Heroic)
 		warnRestoreSoul:Show()
 		timerRestoreSoul:Start()
-        timerDefileCD:Start(41)
-        warnDefileSoon:Schedule(41-5)
-        countdownDefile:Schedule(41-5, 5)
 	elseif args:IsSpellID(72350) then -- Fury of Frostmourne
 		mod:SetWipeTime(160)--Change min wipe time mid battle to force dbm to keep module loaded for this long out of combat roleplay, hopefully without breaking mod.
 		timerRoleplay:Start()
 		timerVileSpirit:Cancel()
 		timerSoulreaperCD:Cancel()
-		countdownSoulreaper:Cancel()
 		timerDefileCD:Cancel()
-		countdownDefile:Cancel()
 		timerHarvestSoulCD:Cancel()
 		berserkTimer:Cancel()
 		warnDefileSoon:Cancel()
@@ -491,7 +347,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specwarnSoulreaper:Show(args.destName)
 		timerSoulreaper:Start(args.destName)
 		timerSoulreaperCD:Start()
-		countdownSoulreaper:Schedule(30.5-5, 5)
 		if args:IsPlayer() then
 			specWarnSoulreaper:Show()
 		end
@@ -502,10 +357,8 @@ function mod:SPELL_CAST_SUCCESS(args)
 		end
 		if phase == 1 then
 			timerRagingSpiritCD:Start()
-			countdownRagingSpirits:Schedule(22-5, 5)
 		else
 			timerRagingSpiritCD:Start(17)
-			countdownRagingSpirits:Schedule(17-5, 5)
 		end
 		if self.Options.RagingSpiritIcon then
 			self:SetIcon(args.destName, 7, 5)
@@ -524,9 +377,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnHarvestSouls:Show()
 		timerVileSpirit:Cancel()
 		timerSoulreaperCD:Cancel()
-		countdownSoulreaper:Cancel()
 		timerDefileCD:Cancel()
-		countdownDefile:Cancel()
 		warnDefileSoon:Cancel()
 	end
 end
@@ -546,7 +397,6 @@ do
 		if args:IsSpellID(72143, 72146, 72147, 72148) then -- Shambling Horror enrage effect.
 			warnShamblingEnrage:Show(args.destName)
 			timerEnrageCD:Start()
-			countdownEnrage:Schedule(20-5, 5)
 		elseif args:IsSpellID(72754, 73708, 73709, 73710) and args:IsPlayer() and time() - lastDefile > 2 then		-- Defile Damage
 			specWarnDefile:Show()
 			lastDefile = time()
@@ -624,7 +474,6 @@ do
 			if time() - lastValk > 15 then -- show the warning and timer just once for all three summon events
 				warnSummonValkyr:Show()
 				timerSummonValkyr:Start()
-				countdownValkyrs:Schedule(45-5, 5)
 				lastValk = time()
 				scanValkyrTargets()
 				if self.Options.ValkyrIcon then
@@ -637,6 +486,8 @@ do
 			end
 		end
 	end
+	
+	local count = 0
 	
 	mod:RegisterOnUpdateHandler(function(self)
 		if self.Options.ValkyrIcon and (DBM:GetRaidRank() > 0 and not (iconsSet == 3 and self:IsDifficulty("normal25", "heroic25") or iconsSet == 1 and self:IsDifficulty("normal10", "heroic10"))) then
@@ -651,9 +502,9 @@ do
 			end
 		end
 		
-		if count < 11 and (self:IsDifficulty("normal25", "heroic25") or self:IsDifficulty("normal10", "heroic10")) and UnitDebuff("player", "Necrotic Plague") == true then
-			print("count register update works")
-			count = count + 1
+		if count < 11 then
+		 print("count register update works")
+		 count = count + 1
 		end
 	end, 1)
 end
@@ -692,36 +543,19 @@ function mod:NextPhase()
 		timerNecroticPlagueCD:Start(27)
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			timerTrapCD:Start()
-			countdownShadowTrap:Schedule(15.5-5, 5)
 		end
 	elseif phase == 2 then
 		timerSummonValkyr:Start(20)
-		countdownValkyrs:Schedule(20-5, 5)
 		timerSoulreaperCD:Start(40)
-		countdownSoulreaper:Schedule(40-5, 5)
-		timerDefileCD:Start(32.5)
-		countdownDefile:Schedule(32.5-5, 5)
+		timerDefileCD:Start(38)
 		timerInfestCD:Start(14)
-		countdownInfest:Schedule(14-5, 5)
-		warnDefileSoon:Schedule(32.5-5)
-
-		local nextPal = jaGetNextPaladinForRaidCD()
-		jaWarningRaidCooldown:Show(nextPal .. " next!")
-		jaTimerRaidCooldown:Start(13, nextPal)
-
-		local paladin,cd = strsplit(" ", nextPal)
-		if UnitName("player") == paladin then
-			jaSpecialWarningYouNext:Show("You are next!")
-			jaSpecialWarningCD:Schedule(13, "Use " .. cd .. " now!")
-        end
+		warnDefileSoon:Schedule(33)
 	elseif phase == 3 then
 		timerVileSpirit:Start(20)
 		timerSoulreaperCD:Start(40)
-		countdownSoulreaper:Schedule(40-5, 5)
-		timerDefileCD:Start(43)
-		countdownDefile:Schedule(43-5, 5)
+		timerDefileCD:Start(38)
 		timerHarvestSoulCD:Start(14)
-		warnDefileSoon:Schedule(43-5)
+		warnDefileSoon:Schedule(33)
 	end
 end
 
@@ -829,25 +663,12 @@ function mod:OnSync(msg, target)
 		end
 	end
 end
-f = CreateFrame("Frame")
-f:SetScript("OnUpdate",function(args)
-	for n = 1, 40 do
-		local plagueString = UnitDebuff("raid" .. n, "Necrotic Plague")
-		local guid, UnitName = UnitGUID("player"), UnitName("player")
-		local name = GetRaidRosterInfo(n)
-		
-		if plagueString == "Necrotic Plague" and plagueWarned == false then --and GetTime() - lastPlagueCast > 2 then	
-			plagueWarned = true
-			warnNecroticPlague:Show(name)
-			plagueTarget = name
-			if name == UnitName then
-				specWarnNecroticPlague:Show()
-			end
-			if mod.Options.NecroticPlagueIcon then
-				mod:SetIcon(name, 5, 5)
-			end
-		elseif plagueString == nil and plagueWarned == true and plagueTarget == name then
-			plagueWarned = false
-		end
+
+local count = 0
+
+function mod:OnUpdate(args)
+	if count < 11 then
+		print("OnUpdate works")
+		count = count + 1
 	end
-end)
+end
