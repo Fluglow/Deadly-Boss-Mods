@@ -336,16 +336,6 @@ do
 			end
 		end
 	end
-	
-	--ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER", function(frame, event, message, sender, ...)
-	--	if message:find("songPlay") and songPlayed == 0 then
-	--		PlaySoundFile("Sound/Music/GlueScreenMusic/BCCredits_Lament_of_the_Highborne.mp3", "master")
-	--		songPlayed = 1
-	--		return true -- hide this message
-	--	else 
-			
-    --    end
-	--end)
 
 	DBM:RegisterEvents("ADDON_LOADED")
 
@@ -1095,20 +1085,18 @@ do
 			local playerWithHigherVersionPromoted = false
 			for i = 1, GetNumRaidMembers() do
 				local name, rank, subgroup, _, _, fileName = GetRaidRosterInfo(i)
-				if name then
-					if (not raid[name]) and inRaid then
-						fireEvent("raidJoin", name)
-					end
-					raid[name] = raid[name] or {}
-					raid[name].name = name
-					raid[name].rank = rank
-					raid[name].subgroup = subgroup
-					raid[name].class = fileName
-					raid[name].id = "raid"..i
-					raid[name].updated = true
-					if not playerWithHigherVersionPromoted and rank >= 1 and raid[name].version and raid[name].version > tonumber(DBM.Version) then
-						playerWithHigherVersionPromoted = true
-					end
+				if (not raid[name]) and inRaid then
+					fireEvent("raidJoin", name)
+				end
+				raid[name] = raid[name] or {}
+				raid[name].name = name
+				raid[name].rank = rank
+				raid[name].subgroup = subgroup
+				raid[name].class = fileName
+				raid[name].id = "raid"..i
+				raid[name].updated = true
+				if not playerWithHigherVersionPromoted and rank >= 1 and raid[name].version and raid[name].version > tonumber(DBM.Version) then
+					playerWithHigherVersionPromoted = true
 				end
 			end
 			enableIcons = not playerWithHigherVersionPromoted
@@ -2944,6 +2932,41 @@ do
 			self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(spellId)
 		end
 		return obj
+	end
+	
+	local function newSpecialWarningHalion(self, announceType, spellId, percentage, stacks, optionDefault, optionName, noSound, runSound)
+		spellName = GetSpellInfo(spellId) or "unknown"
+		local text = "Corporeality "..percentage
+		local obj = setmetatable( -- todo: fix duplicate code
+			{
+				text = text,
+				announceType = announceType,
+				option = optionName or text,
+				mod = self,
+				sound = not noSound,
+			},
+			mt
+		)
+		if optionName == false then
+			obj.option = nil
+		else
+			self:AddBoolOption(optionName or text, true, "announce")		-- todo cleanup core code from that indexing type using options[text] is very bad!!! ;)
+		end
+		table.insert(self.specwarns, obj)
+		if announceType == "stack" then
+			self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS[announceType]:format(stacks or 3, spellId)
+		else
+			if spellId == 74832 then
+				self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS_HALION_40[announceType]:format(spellId)
+			elseif spellId == 74833 then
+				self.localization.options[text] = DBM_CORE_AUTO_SPEC_WARN_OPTIONS_HALION_30[announceType]:format(spellId)
+			end
+		end
+		return obj
+	end
+	
+	function bossModPrototype:NewSpecialWarningSpellCorporeality(text, percentage, optionDefault, ...)
+		return newSpecialWarningHalion(self, "spell", text, percentage, nil, optionDefault, ...)
 	end
 
 	function bossModPrototype:NewSpecialWarningSpell(text, optionDefault, ...)

@@ -179,6 +179,7 @@ L:SetOptionLocalization({
 	SetIconOnConsumption	= "Set icons on $spell:74562 or $spell:74792 targets",--So we can use single functions for both versions of spell.
 	YellOnConsumption		= "Yell on $spell:74562 or $spell:74792",
 	WhisperOnConsumption	= "Send whisper to $spell:74562 or $spell:74792\ntargets",
+	PlayCountdownOnMeteorStrike = DBM_CORE_AUTO_ANNOUNCE_OPTIONS.countdown:format(75952, GetSpellInfo(75952) or "unknown")
 	
 })
 

@@ -475,7 +475,7 @@ function mod:SPELL_CAST_START(args)
 end
 
 function mod:SPELL_CAST_SUCCESS(args)
-	if args:IsSpellID(70337, 73912, 73913, 73914) then -- Necrotic Plague (SPELL_AURA_APPLIED is not fired for this spell)
+	if args:IsSpellID(70337, 73912, 73913, 73914) then -- Necrotic Plague (SPELL_AURA_APPLIED is not fired for this spell, UnitDebuff is fired though)
 		warnNecroticPlague:Show(args.destName)
 		timerNecroticPlagueCD:Start()
 		timerNecroticPlagueCleanse:Start()
@@ -649,11 +649,6 @@ do
 					valkIcons[guid] = nil
 				end
 			end
-		end
-		
-		if count < 11 and (self:IsDifficulty("normal25", "heroic25") or self:IsDifficulty("normal10", "heroic10")) and UnitDebuff("player", "Necrotic Plague") == true then
-			print("count register update works")
-			count = count + 1
 		end
 	end, 1)
 end
@@ -829,6 +824,7 @@ function mod:OnSync(msg, target)
 		end
 	end
 end
+
 f = CreateFrame("Frame")
 f:SetScript("OnUpdate",function(args)
 	for n = 1, 40 do
@@ -836,7 +832,7 @@ f:SetScript("OnUpdate",function(args)
 		local guid, UnitName = UnitGUID("player"), UnitName("player")
 		local name = GetRaidRosterInfo(n)
 		
-		if plagueString == "Necrotic Plague" and plagueWarned == false then --and GetTime() - lastPlagueCast > 2 then	
+		if plagueString == "Necrotic Plague" and plagueWarned == false and GetTime() - lastPlagueCast > 2 then	
 			plagueWarned = true
 			warnNecroticPlague:Show(name)
 			plagueTarget = name

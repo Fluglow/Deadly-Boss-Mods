@@ -38,6 +38,8 @@ local specWarnTwilightCutter		= mod:NewSpecialWarningSpell(77844)
 local specWarnCorporealitySlow		= mod:NewSpecialWarningSpellCorporeality(74832, "40%%, slow DPS!")
 local specWarnCorporealityStop		= mod:NewSpecialWarningSpellCorporeality(74833, "30%%, stop DPS!")
 
+local countdownMeteorStrike	= mod:NewCountdown(75952, "PlayCountdownOnMeteorStrike", false)
+
 local timerShadowConsumptionCD		= mod:NewNextTimer(25, 74792)
 local timerFieryConsumptionCD		= mod:NewNextTimer(25, 74562)
 local timerMeteorCD					= mod:NewNextTimer(40, 74648)
@@ -99,6 +101,7 @@ function mod:OnCombatStart(delay)--These may still need retuning too, log i had 
 	lastshroud = 0
 	berserkTimer:Start(-delay)
 	timerMeteorCD:Start(20-delay)
+	countdownMeteorStrike(20-5-delay)
 	timerFieryConsumptionCD:Start(15-delay)
 	timerFieryBreathCD:Start(10-delay)
 	updateHealthFrame(1)
@@ -230,6 +233,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		updateHealthFrame(2)
 		timerFieryBreathCD:Cancel()
 		timerMeteorCD:Cancel()
+		countdownMeteorStrike:Cancel()
 		timerFieryConsumptionCD:Cancel()
 		warnPhase2:Show()
 		timerShadowBreathCD:Start(25)
@@ -246,6 +250,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			warningMeteor:Show()
 			timerMeteorCast:Start()--7 seconds from boss yell the meteor impacts.
 			timerMeteorCD:Start()
+			countdownMeteorStrike:Schedule(40-5, 5)
 		end
 		if mod:LatencyCheck() then
 			self:SendSync("Meteor")
