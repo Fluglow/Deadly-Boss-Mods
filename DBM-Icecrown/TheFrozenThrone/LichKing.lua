@@ -120,7 +120,10 @@ local function jaGetNextPaladinForRaidCD()
 	if not INFEST_ROTA or #INFEST_ROTA == 0 then return "Unknown" end
 
 	local currentPaladin = INFEST_ROTA[jaLastPaladin]
-	jaLastPaladin = _G["mod"](jaLastPaladin, #INFEST_ROTA) + 1
+	jaLastPaladin = jaLastPaladin + 1
+    if jaLastPaladin > #INFEST_ROTA then
+        jaLastPaladin = 1
+    end
 	return currentPaladin
 end
 
@@ -385,6 +388,10 @@ function mod:SPELL_CAST_START(args)
 		countdownDefile:Cancel()
 		warnDefileSoon:Cancel()
 
+        jaLastPaladin = jaLastPaladin - 1
+        if jaLastPaladin < 1 then
+            jaLastPaladin = #INFEST_ROTA
+        end
 		jaTimerRaidCooldown:Cancel()
 		jaSpecialWarningCD:Cancel()
 	elseif args:IsSpellID(72262) then -- Quake (phase transition end)
