@@ -13,7 +13,7 @@ and a corporeality warning (30% and 40%) for Halion. Further more, if Necrotic P
 
 ## Lady Deathwisper:
 - Plays a countdown when she is about to Summon Spirits
-- DBM warning if targeted by a spirit (can give false positives for healers if adds are active)
+- DBM warning if targeted by a spirit (can give false positives for healers if adds are active)(Credit to Ntt of Obsidius)
 - (Optional:) Plays a countdown sound when adds are about to spawn
 
 ## Deathbringer Saurfang:
