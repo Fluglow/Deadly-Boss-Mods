@@ -105,9 +105,6 @@ local berserkTimer			= mod:NewBerserkTimer(900)
 
 local soundDefile			= mod:NewSound(72762)
 
-
-
-
 -- Just Average
 local jaWarningRaidCooldown = mod:NewAnnounce("%s", 1, "Interface\\Icons\\Spell_Nature_WispSplode")
 local jaTimerRaidCooldown   = mod:NewTimer(21.5, "%s")
@@ -120,10 +117,7 @@ local function jaGetNextPaladinForRaidCD()
 	if not INFEST_ROTA or #INFEST_ROTA == 0 then return "Unknown" end
 
 	local currentPaladin = INFEST_ROTA[jaLastPaladin]
-	jaLastPaladin = jaLastPaladin + 1
-    if jaLastPaladin > #INFEST_ROTA then
-        jaLastPaladin = 1
-    end
+	jaLastPaladin = _G["mod"](jaLastPaladin, #INFEST_ROTA) + 1
 	return currentPaladin
 end
 
@@ -156,6 +150,7 @@ function mod:OnSync(msg, arg)
 end
 
 local function jaBuildPaladinRotation()
+	--[[
 	table.wipe(INFEST_ROTA)
 
 	local currentCD = 0
@@ -197,10 +192,8 @@ local function jaBuildPaladinRotation()
 			INFEST_ROTA[#INFEST_ROTA+1] = unitName .. " " .. cdName
 		end
 	end
+	--]]
 end
-
-
-
 
 
 mod:AddBoolOption("SpecWarnHealerGrabbed", mod:IsTank() or mod:IsHealer(), "announce")
@@ -388,10 +381,6 @@ function mod:SPELL_CAST_START(args)
 		countdownDefile:Cancel()
 		warnDefileSoon:Cancel()
 
-        jaLastPaladin = jaLastPaladin - 1
-        if jaLastPaladin < 1 then
-            jaLastPaladin = #INFEST_ROTA
-        end
 		jaTimerRaidCooldown:Cancel()
 		jaSpecialWarningCD:Cancel()
 	elseif args:IsSpellID(72262) then -- Quake (phase transition end)

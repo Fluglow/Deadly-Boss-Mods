@@ -101,7 +101,7 @@ function mod:OnCombatStart(delay)--These may still need retuning too, log i had 
 	lastshroud = 0
 	berserkTimer:Start(-delay)
 	timerMeteorCD:Start(20-delay)
-	countdownMeteorStrike(20-5-delay)
+	countdownMeteorStrike:Schedule(20-5, 5)
 	timerFieryConsumptionCD:Start(15-delay)
 	timerFieryBreathCD:Start(10-delay)
 	updateHealthFrame(1)
@@ -286,6 +286,7 @@ function mod:OnSync(msg, target)
 			warningMeteor:Show()
 			timerMeteorCast:Start()
 			timerMeteorCD:Start()
+			countdownMeteorStrike:Schedule(40-5, 5)
 		end
 	elseif msg == "ShadowTarget" then
 		if self.Options.AnnounceAlternatePhase then
