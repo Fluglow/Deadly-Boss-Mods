@@ -1,6 +1,6 @@
 
 -- Should have 6 CDs here always
-INFEST_ROTA = INFEST_ROTA or {"Lansher Sac","Danishcunt AM","Overhealbot Sac","Overhealbot AM","Luxxia Sac","Luxxia AM"}
+--INFEST_ROTA = INFEST_ROTA or {"Lansher Sac","Danishcunt AM","Overhealbot Sac","Overhealbot AM","Luxxia Sac","Luxxia AM"}
 
 
 
@@ -114,19 +114,24 @@ local jaSpecialWarningYouNext = mod:NewSpecialWarning("%s")
 local jaLastPaladin = 1
 
 local function jaGetNextPaladinForRaidCD()
+	--[[
 	if not INFEST_ROTA or #INFEST_ROTA == 0 then return "Unknown" end
 
 	local currentPaladin = INFEST_ROTA[jaLastPaladin]
 	jaLastPaladin = _G["mod"](jaLastPaladin, #INFEST_ROTA) + 1
 	return currentPaladin
+	--]]
 end
 
 local function jaBuildPaladinRotationFromString(string)
+	--[[
     print("Received new infest rotation: " .. string)
     INFEST_ROTA = { strsplit(",", string) }
+	--]]
 end
 
 local function jaBuildStringFromPaladinRotation()
+	--[[
     local string = ""
     for k,v in ipairs(INFEST_ROTA) do
         string = string..v
@@ -135,18 +140,23 @@ local function jaBuildStringFromPaladinRotation()
         end
     end
     return string
+	--]]
 end
 
 function SendPaladinInfestRotation()
+	--[[
     local infestRota = jaBuildStringFromPaladinRotation()
     print("Sending infest rotation: " .. infestRota)
     mod:SendSync("InfestRota", infestRota)
+	--]]
 end
 
 function mod:OnSync(msg, arg)
+	--[[
     if msg == "InfestRota" then
         jaBuildPaladinRotationFromString(arg)
     end
+	--]]
 end
 
 local function jaBuildPaladinRotation()
@@ -230,7 +240,7 @@ function mod:OnCombatStart(delay)
 	self:NextPhase()
 	table.wipe(warnedValkyrGUIDs)
 
-	jaLastPaladin = 1
+	--jaLastPaladin = 1
 	-- jaBuildPaladinRotation()
 end
 
@@ -381,8 +391,8 @@ function mod:SPELL_CAST_START(args)
 		countdownDefile:Cancel()
 		warnDefileSoon:Cancel()
 
-		jaTimerRaidCooldown:Cancel()
-		jaSpecialWarningCD:Cancel()
+		--jaTimerRaidCooldown:Cancel()
+		--jaSpecialWarningCD:Cancel()
 	elseif args:IsSpellID(72262) then -- Quake (phase transition end)
 		warnQuake:Show()
 		timerRagingSpiritCD:Cancel()
@@ -404,7 +414,8 @@ function mod:SPELL_CAST_START(args)
 		specWarnInfest:Show()
 		timerInfestCD:Start()
 		countdownInfest:Schedule(22.5-5, 5)
-
+	
+		--[[
 		local nextPal = jaGetNextPaladinForRaidCD()
 		jaWarningRaidCooldown:Show(nextPal .. " next!")
 		jaTimerRaidCooldown:Start(nextPal)
@@ -414,6 +425,7 @@ function mod:SPELL_CAST_START(args)
 			jaSpecialWarningYouNext:Show("You are next!")
 			jaSpecialWarningCD:Schedule(21.5, "Use " .. cd .. " now!")
 		end
+		--]]
 	elseif args:IsSpellID(72762) then -- Defile
 		if self.Options.LKBugWorkaround then
 			self:ScheduleMethod(0.1, "OldDefileTarget")
@@ -696,7 +708,7 @@ function mod:NextPhase()
 		countdownInfest:Schedule(14-5, 5)
 		warnDefileSoon:Schedule(32.5-5)
 
-		local nextPal = jaGetNextPaladinForRaidCD()
+		--[[local nextPal = jaGetNextPaladinForRaidCD()
 		jaWarningRaidCooldown:Show(nextPal .. " next!")
 		jaTimerRaidCooldown:Start(13, nextPal)
 
@@ -704,7 +716,7 @@ function mod:NextPhase()
 		if UnitName("player") == paladin then
 			jaSpecialWarningYouNext:Show("You are next!")
 			jaSpecialWarningCD:Schedule(13, "Use " .. cd .. " now!")
-        end
+        end --]]
 	elseif phase == 3 then
 		timerVileSpirit:Start(20)
 		timerSoulreaperCD:Start(40)
