@@ -66,6 +66,9 @@ local lastflame = 0
 local lastshroud = 0
 local phases = {}
 local lastCorpAnnounce = "slow"
+local lastMeteor = 0
+local phase_transition = 0
+local transition_countdown
 
 function mod:LocationChecker()
 	if GetTime() - lastshroud < 6 then
@@ -100,8 +103,9 @@ function mod:OnCombatStart(delay)--These may still need retuning too, log i had 
 	lastflame = 0
 	lastshroud = 0
 	berserkTimer:Start(-delay)
-	timerMeteorCD:Start(20-delay)
-	countdownMeteorStrike:Schedule(20-5, 5)
+	timerMeteorCD:Start(21-delay)
+	countdownMeteorStrike:Schedule(21-5, 5)
+	print("Combat start meteor print")
 	timerFieryConsumptionCD:Start(15-delay)
 	timerFieryBreathCD:Start(10-delay)
 	updateHealthFrame(1)
@@ -248,8 +252,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	elseif msg == L.MeteorCast or msg:find(L.MeteorCast) then--There is no CLEU cast trigger for meteor, only yell
 		if not self.Options.AnnounceAlternatePhase then
 			warningMeteor:Show()
+			lastMeteor = GetTime()
 			timerMeteorCast:Start()--7 seconds from boss yell the meteor impacts.
 			timerMeteorCD:Start()
+			print("Yell meteor print")
 			countdownMeteorStrike:Schedule(40-5, 5)
 		end
 		if mod:LatencyCheck() then
@@ -284,9 +290,11 @@ function mod:OnSync(msg, target)
 	elseif msg == "Meteor" then
 		if self.Options.AnnounceAlternatePhase then
 			warningMeteor:Show()
-			timerMeteorCast:Start()
 			timerMeteorCD:Start()
-			countdownMeteorStrike:Schedule(40-5, 5)
+			lastMeteor = GetTime()
+			print("On sync meteor print")
+			countdownMeteorStrike:Schedule(40-5, 5) --Fires at the same time as the normal meteor countdown, redundant
+			timerMeteorCast:Start()
 		end
 	elseif msg == "ShadowTarget" then
 		if self.Options.AnnounceAlternatePhase then
@@ -321,7 +329,21 @@ function mod:OnSync(msg, target)
 	elseif msg == "Phase3" then
 		updateHealthFrame(3)
 		warnPhase3:Show()
-		timerMeteorCD:Start(30) --These i'm not sure if they start regardless of drake aggro, or if it varies as well.
+		phase_transition = GetTime()
+		timerMeteorCD:Start(22) --These i'm not sure if they start regardless of drake aggro, or if it varies as well.
+		print("Phase 3 meteor print")
+		countdownMeteorStrike:Schedule(22-5, 5)
 		timerFieryConsumptionCD:Start(20)--not exact, 15 seconds from tank aggro, but easier to add 5 seconds to it as a estimate timer than trying to detect this
 	end
 end
+
+f = CreateFrame("Frame")
+f:SetScript("OnUpdate",function(args)
+	if GetTime() - phase_transition >= 16 and GetTime() - lastshroud < 3 and warned_preP3 == true then
+		--countdownMeteorStrike:Schedule(30, 5)
+		countdownMeteorStrike:Cancel()
+	--elseif GetTime() - phase_transition == 18 and GetTime() - lastshroud > 3 and warned_preP3 == true and transition_countdown == false then
+		--countdownMeteorStrike:Schedule(0, 3)
+		--transition_countdown = true
+	end
+end)
