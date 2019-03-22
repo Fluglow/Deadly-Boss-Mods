@@ -1,8 +1,8 @@
 # Deadly-Boss-Mods for Dalaran-WoW made by Cheno and Xeralol
 
-in the following you'll find an edited Version of DBM with a Voice Countdown feature included.
+In the following you'll find an edited Version of DBM with a Voice Countdown feature included.
 
-The voice countdown can be enabled for several abilities in ICC and (on Halion for Meteor Strike) and will play a countdown sound (5,4,3,2,1)
+The voice countdown can be enabled for several abilities in ICC and (on Halion for Meteor Strike, work in progress) and will play a countdown sound (5,4,3,2,1)
 when something important is about to happen.
 
 This version of DBM also contains fixes for ranges of ICC spells on the range check, a fix for the combat start timer on Horde-Saurfang, a prototype spirit warning (Credit to NTT of Obsidius) 
