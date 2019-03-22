@@ -105,7 +105,6 @@ function mod:OnCombatStart(delay)--These may still need retuning too, log i had 
 	berserkTimer:Start(-delay)
 	timerMeteorCD:Start(21-delay)
 	countdownMeteorStrike:Schedule(21-5, 5)
-	print("Combat start meteor print")
 	timerFieryConsumptionCD:Start(15-delay)
 	timerFieryBreathCD:Start(10-delay)
 	updateHealthFrame(1)
@@ -255,7 +254,6 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			lastMeteor = GetTime()
 			timerMeteorCast:Start()--7 seconds from boss yell the meteor impacts.
 			timerMeteorCD:Start()
-			print("Yell meteor print")
 			countdownMeteorStrike:Schedule(40-5, 5)
 		end
 		if mod:LatencyCheck() then
@@ -292,7 +290,6 @@ function mod:OnSync(msg, target)
 			warningMeteor:Show()
 			timerMeteorCD:Start()
 			lastMeteor = GetTime()
-			print("On sync meteor print")
 			countdownMeteorStrike:Schedule(40-5, 5) --Fires at the same time as the normal meteor countdown, redundant
 			timerMeteorCast:Start()
 		end
@@ -331,7 +328,6 @@ function mod:OnSync(msg, target)
 		warnPhase3:Show()
 		phase_transition = GetTime()
 		timerMeteorCD:Start(22) --These i'm not sure if they start regardless of drake aggro, or if it varies as well.
-		print("Phase 3 meteor print")
 		countdownMeteorStrike:Schedule(22-5, 5)
 		timerFieryConsumptionCD:Start(20)--not exact, 15 seconds from tank aggro, but easier to add 5 seconds to it as a estimate timer than trying to detect this
 	end
