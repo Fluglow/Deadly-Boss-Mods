@@ -1813,6 +1813,7 @@ local function CreateOptionsMenu()
 		spamOutArea:CreateCheckButton(L.SpamBlockNoSendAnnounce, true, nil, "DontSendBossAnnounces")
 		spamOutArea:CreateCheckButton(L.SpamBlockNoSendWhisper, true, nil, "DontSendBossWhispers")
 		spamOutArea:CreateCheckButton(L.SpamBlockNoSetIcon, true, nil, "DontSetIcons")
+		spamOutArea:CreateCheckButton(L.SpamBlockNoCountdown, true, nil, "DontPlayCountdowns")
 
 		local spamArea = spamPanel:CreateArea(L.Area_SpamFilter, nil, 135, true)
 		spamArea:CreateCheckButton(L.HideBossEmoteFrame, true, nil, "HideBossEmoteFrame")

@@ -107,6 +107,7 @@ DBM.DefaultOptions = {
 	DontSendBossAnnounces = false,
 	DontSendBossWhispers = false,
 	DontSetIcons = false,
+	DontPlayCountdowns = false,
 	LatencyThreshold = 250,
 	BigBrotherAnnounceToRaid = false,
 --	HelpMessageShown = false,
@@ -900,12 +901,14 @@ do
 			sendSync("DBMv4-Pizza", ("%s\t%s"):format(time, text))
 		end
 		if sender then DBM:ShowPizzaInfo(text, sender) end
-		if text == DBM_CORE_TIMER_PULL then
-			if time > 5 then self:Schedule(time - 5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\5.ogg") end
-			if time > 4 then self:Schedule(time - 4, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\4.ogg") end
-			if time > 3 then self:Schedule(time - 3, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\3.ogg") end
-			if time > 2 then self:Schedule(time - 2, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\2.ogg") end
-			if time > 1 then self:Schedule(time - 1, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\1.ogg") end
+		if not DBM.Options.DontPlayCountdowns then
+			if text == DBM_CORE_TIMER_PULL then
+				if time > 5 then self:Schedule(time - 5, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\5.ogg") end
+				if time > 4 then self:Schedule(time - 4, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\4.ogg") end
+				if time > 3 then self:Schedule(time - 3, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\3.ogg") end
+				if time > 2 then self:Schedule(time - 2, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\2.ogg") end
+				if time > 1 then self:Schedule(time - 1, PlaySoundFile, "Interface\\AddOns\\DBM-Core\\sounds\\new\\1.ogg") end
+			end
 		end
 	end
 
@@ -2787,6 +2790,10 @@ do
     local countdownPrototype = {}
     local mt = { __index = countdownPrototype }
     function bossModPrototype:NewCountdown(spellId, optionName, optionDefault)
+		if DBM.Options.DontPlayCountdowns then
+			print("countdown disabled")
+			return
+		end
         self.numSounds = self.numSounds and self.numSounds + 1 or 1
         local obj = setmetatable(
             {
@@ -2804,6 +2811,9 @@ do
     end
 
     function countdownPrototype:Play(counter)
+		if DBM.Options.DontPlayCountdowns then
+			return
+		end
         if not counter then counter = 5 end
         if counter <= 0 then return end
 
@@ -2818,7 +2828,9 @@ do
     end
 
     function countdownPrototype:Cancel(...)
-        return unschedule(self.Play, self.mod, self, ...)
+		if self ~= nil then
+			return unschedule(self.Play, self.mod, self, ...)
+		end
     end 
 end
 
