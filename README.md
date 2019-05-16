@@ -8,6 +8,11 @@ when something important is about to happen.
 This version of DBM also contains fixes for ranges of ICC spells on the range check, a fix for the combat start timer on Horde-Saurfang, a prototype spirit warning (Credit to NTT of Obsidius) 
 and a corporeality warning (30% and 40%) for Halion. Further more, if Necrotic Plague jumps from one player to another, a DBM warning is fired for that second player. 
 
+## Halion, The Twilight Destroyer
+- Plays a countdown when a Meteor is about to hit
+- Plays a countdown when Twilight Cutters are about to appear
+- DBM warning on 30% and 40% Cooporeality
+
 ## Lord Marrowgar:
 - Plays a countdown when Bonestorm is about to happen
 
