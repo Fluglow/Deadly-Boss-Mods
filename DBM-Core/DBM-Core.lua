@@ -741,16 +741,34 @@ SlashCmdList["DEADLYBOSSMODS"] = function(msg)
 		if DBM:GetRaidRank() == 0 then
 			return DBM:AddMsg(DBM_ERROR_NO_PERMISSION)
 		end
+		
 		local timer = tonumber(cmd:sub(5)) or 10
+		local timer = cmd:sub(5)
+		if timer == " cancel" then
+		    timer = 0
+		else
+		    timer = tonumber(timer) or 10
+		end
+
 		local channel = ((GetNumRaidMembers() == 0) and "PARTY") or "RAID_WARNING"
-		DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
-		SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
-		if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
-		if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
-		if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
-		if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
-		if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
-		DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel)
+		
+		if timer == 0 then
+		    DBM:CreatePizzaTimer(.1, DBM_CORE_TIMER_PULL, true)
+			DBM:Unschedule(SendChatMessage)
+			if DBM_CORE_TIMER_PULL then
+				DBM.Bars:CancelBar(DBM_CORE_TIMER_PULL)
+			end
+			SendChatMessage('PULL TIMER CANCELED!', channel)
+		else
+			DBM:CreatePizzaTimer(timer, DBM_CORE_TIMER_PULL, true)
+			SendChatMessage(DBM_CORE_ANNOUNCE_PULL:format(timer), channel)
+			if timer > 7 then DBM:Schedule(timer - 7, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(7), channel) end
+			if timer > 5 then DBM:Schedule(timer - 5, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(5), channel) end
+			if timer > 3 then DBM:Schedule(timer - 3, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(3), channel) end
+			if timer > 2 then DBM:Schedule(timer - 2, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(2), channel) end
+			if timer > 1 then DBM:Schedule(timer - 1, SendChatMessage, DBM_CORE_ANNOUNCE_PULL:format(1), channel) end
+			DBM:Schedule(timer, SendChatMessage, DBM_CORE_ANNOUNCE_PULL_NOW, channel)
+		end
 	elseif cmd:sub(1, 5) == "arrow" then
 		if not DBM:IsInRaid() then
 			DBM:AddMsg(DBM_ARROW_NO_RAIDGROUP)
