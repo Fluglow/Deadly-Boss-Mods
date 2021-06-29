@@ -1,4 +1,4 @@
-# Deadly-Boss-Mods for Dalaran-WoW made by Cheno and Xeralol
+# Deadly-Boss-Mods for Dalaran-WoW made by Cheno and contributors.
 
 In the following you'll find an edited Version of DBM with a Voice Countdown feature included.
 
