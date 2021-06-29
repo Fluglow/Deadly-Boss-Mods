@@ -3,7 +3,7 @@
 In the following you'll find an edited Version of DBM with a Voice Countdown feature included.
 
 The voice countdown can be enabled for several abilities in ICC and (on Halion for Meteor Strike, work in progress) and will play a countdown sound (5,4,3,2,1)
-when something important is about to happen. All countdowns can be turned off in the settings. 
+when something important is about to happen. All countdowns can be turned off in the settings. Credits to Xeralol.
 
 This version of DBM also contains fixes for ranges of ICC spells on the range check, a fix for the combat start timer on Horde-Saurfang, a prototype spirit warning (Credit to NTT of Obsidius) 
 and a corporeality warning (30% and 40%) for Halion. Further more, if Necrotic Plague jumps from one player to another, a DBM warning is fired for that second player. 
@@ -20,7 +20,7 @@ Pull timers can now be cancelled. (Credit to Rahuum)
 
 ## Lady Deathwisper:
 - Plays a countdown when she is about to Summon Spirits
-- DBM warning if targeted by a spirit (can give false positives for healers if adds are active)(Credit to Ntt of Obsidius)
+- DBM warning if targeted by a spirit (can give false positives for healers if adds are active). Credit to Ntt of Obsidius
 - (Optional:) Plays a countdown sound when adds are about to spawn
 
 ## Deathbringer Saurfang:
