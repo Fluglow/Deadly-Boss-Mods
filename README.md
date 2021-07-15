@@ -39,6 +39,7 @@ Pull timers can now be cancelled. (Credit to Rahuum)
 ## Professor Putricide:
 - Plays a countdown when Unbound Plague is about to happen
 - Plays a countdown when you should pass your Unbound Plague to someone else
+- Warning for Mallable Goo fixed. (Credit to Fluglow)
 
 ## Blood Prince Council:
 - Plays a countdown when Shock Vortex is about to happen
