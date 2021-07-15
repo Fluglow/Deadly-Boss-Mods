@@ -14,9 +14,11 @@ mod:RegisterEvents(
 	"SPELL_AURA_APPLIED_DOSE",
 	"SPELL_AURA_REFRESH",
 	"SPELL_AURA_REMOVED",
-	"UNIT_HEALTH"
+	"UNIT_HEALTH",
+	"CHAT_MSG_RAID_BOSS_EMOTE"
 )
 
+local gooEmote						= "%s cast Malleable Goo!"
 local warnSlimePuddle				= mod:NewSpellAnnounce(70341, 2)
 local warnUnstableExperimentSoon	= mod:NewSoonAnnounce(70351, 3)
 local warnUnstableExperiment		= mod:NewSpellAnnounce(70351, 4)
@@ -341,6 +343,30 @@ function mod:UNIT_HEALTH(uId)
 		warnPhase3Soon:Show()	
 	end
 end
+
+local function plaintext(msg)
+	local hex = "[0-9a-fA-F]";
+	local byte = hex .. hex;
+	local rgba = byte .. byte .. byte .. byte;
+
+	return msg:gsub("|c" .. rgba, ""):gsub("|r", ""):gsub("|T.-|t", "");
+end
+
+-- Malleable goo fix
+function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
+	msg = plaintext(msg)
+
+	if msg == gooEmote then
+		warnMalleableGoo:Show()
+		specWarnMalleableGooCast:Show()
+		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
+			timerMalleableGooCD:Start(20)
+		else
+			timerMalleableGooCD:Start()
+		end
+	end
+end
+
 
 function mod:OnSync(msg, target)
 	if msg == "GooOn" then
