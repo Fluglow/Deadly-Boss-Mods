@@ -555,6 +555,8 @@ L:SetOptionLocalization{
 	DefileArrow				= "Show DBM arrow when $spell:72762 is near you",
 	TrapArrow				= "Show DBM arrow when $spell:73539 is near you",
 	LKBugWorkaround			= "Don't use latency based sync check for defile/shadow trap\n(Default on until a bug in sync check is worked out)",
+	InfestRotationSelf		= "Show special warning when you are next on the infest rotation",
+	InfestRotation			= "Show special warning for all infest rotation cooldowns",
 	AnnounceValkGrabs		= "Announce Val'kyr Shadowguard grab targets to raid chat\n(requires announce to be enabled and promoted status)",
 	SpecWarnValkyrLow		= "Show special warning when Valkyr is below 55% HP",
 	AnnouncePlagueStack		= "Announce $spell:73912 stacks to raid (10 stacks, every 5 after 10)\n(requires promoted status)",
