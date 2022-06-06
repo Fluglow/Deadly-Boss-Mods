@@ -118,8 +118,10 @@ local function jaGetNextPaladinForRaidCD()
 	if not INFEST_ROTA or #INFEST_ROTA == 0 then return "Unknown" end
 
 	local currentPaladin = INFEST_ROTA[jaLastPaladin]
-	jaLastPaladin = _G["mod"](jaLastPaladin, #INFEST_ROTA) + 1
-
+	jaLastPaladin = jaLastPaladin + 1
+	if jaLastPaladin > #INFEST_ROTA then
+		jaLastPaladin = 1
+	end
 	return currentPaladin
 end
 
