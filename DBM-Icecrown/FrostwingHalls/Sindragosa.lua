@@ -37,9 +37,9 @@ local specWarnMysticBuffet		= mod:NewSpecialWarningStack(70128, false, 5)
 local specWarnBlisteringCold	= mod:NewSpecialWarningRun(70123)
 
 local timerNextAirphase			= mod:NewTimer(110, "TimerNextAirphase", 43810)
-local timerNextGroundphase		= mod:NewTimer(45, "TimerNextGroundphase", 43810)
+local timerNextGroundphase		= mod:NewTimer(40, "TimerNextGroundphase", 43810)
 local timerNextFrostBreath		= mod:NewNextTimer(22, 71056, nil, mod:IsTank() or mod:IsHealer())
-local timerNextBlisteringCold	= mod:NewCDTimer(67, 70123)
+local timerNextBlisteringCold	= mod:NewCDTimer(75, 70123)
 local timerNextBeacon			= mod:NewNextTimer(16, 70126)
 local timerBlisteringCold		= mod:NewCastTimer(6, 70123)
 local timerUnchainedMagic		= mod:NewBuffActiveTimer(30, 69762)
@@ -228,8 +228,12 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specWarnBlisteringCold:Show()
 		timerBlisteringCold:Start()
         countdownBlisteringCold:Schedule(6-5, 5)
-		timerNextBlisteringCold:Start()
 		soundBlisteringCold:Play()
+	end
+
+	-- Start next Blistering Cold timer on cast.
+	if args:IsSpellID(70123) then
+		timerNextBlisteringCold:Start()
 	end
 end	
 
@@ -271,10 +275,10 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		warnAirphase:Show()
 		timerNextFrostBreath:Cancel()
 		timerUnchainedMagic:Start(55)
-		timerNextBlisteringCold:Start(80)--Not exact anywhere from 80-110seconds after airphase begin
+		timerNextBlisteringCold:Start(75)  -- 35-40s random delay from landing.
 		timerNextAirphase:Start()
 		timerNextGroundphase:Start()
-		warnGroundphaseSoon:Schedule(40)
+		warnGroundphaseSoon:Schedule(35)
 		activeBeacons = true
 	elseif (msg == L.YellPhase2 or msg:find(L.YellPhase2)) or (msg == L.YellPhase2Dem or msg:find(L.YellPhase2Dem)) then
 		phase = phase + 1
