@@ -41,7 +41,7 @@ local timerNextGroundphase		= mod:NewTimer(40, "TimerNextGroundphase", 43810)
 local timerNextFrostBreath		= mod:NewNextTimer(22, 71056, nil, mod:IsTank() or mod:IsHealer())
 local timerNextBlisteringCold	= mod:NewCDTimer(75, 70123)
 local timerNextBeacon			= mod:NewNextTimer(16, 70126)
-local timerBlisteringCold		= mod:NewCastTimer(6, 70123)
+local timerBlisteringColdCast = mod:NewCastTimer(6, 70123)
 local timerUnchainedMagic		= mod:NewBuffActiveTimer(30, 69762)
 local timerInstability			= mod:NewBuffActiveTimer(5, 69766)
 local timerChilledtotheBone		= mod:NewBuffActiveTimer(8, 70106)
@@ -226,13 +226,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(70117) then--Icy Grip Cast, not blistering cold, but adds an extra 1sec to the warning
 		warnBlisteringCold:Show()
 		specWarnBlisteringCold:Show()
-		timerBlisteringCold:Start()
+		timerBlisteringColdCast:Start()
         countdownBlisteringCold:Schedule(6-5, 5)
 		soundBlisteringCold:Play()
 	end
 
 	-- Start next Blistering Cold timer on cast.
-	if args:IsSpellID(70123) then
+	if args:IsSpellID(70123, 71047, 71048, 71049) then
 		timerNextBlisteringCold:Start()
 	end
 end	
