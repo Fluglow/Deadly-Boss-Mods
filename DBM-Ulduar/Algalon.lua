@@ -38,15 +38,15 @@ local specWarnPhasePunch		= mod:NewSpecialWarningStack(64412, nil, 4)
 local specWarnBigBang			= mod:NewSpecialWarningSpell(64584)
 local specWarnCosmicSmash		= mod:NewSpecialWarningSpell(64598)
 
-local timerCombatStart		    = mod:NewTimer(7, "TimerCombatStart", 2457)
+local timerCombatStart		    = mod:NewTimer(8, "TimerCombatStart", 2457)
 local enrageTimer				= mod:NewBerserkTimer(360)
 local timerNextBigBang			= mod:NewNextTimer(90.5, 64584)
 local timerBigBangCast			= mod:NewCastTimer(8, 64584)
-local timerNextCollapsingStar	= mod:NewTimer(15, "NextCollapsingStar")
-local timerCDCosmicSmash		= mod:NewTimer(25, "PossibleNextCosmicSmash")
+local timerNextCollapsingStar	= mod:NewTimer(18, "NextCollapsingStar")
+local timerCDCosmicSmash		= mod:NewTimer(22, "PossibleNextCosmicSmash")
 local timerCastCosmicSmash		= mod:NewCastTimer(4.5, 62311)
 local timerPhasePunch			= mod:NewBuffActiveTimer(45, 64412)
-local timerNextPhasePunch		= mod:NewNextTimer(16, 64412)
+local timerNextPhasePunch		= mod:NewNextTimer(15, 64412)
 
 local warned_preP2 = false
 local warned_star = false
@@ -61,8 +61,8 @@ function mod:OnCombatStart(delay)
     	end
 	time = tonumber(time)
 	if time == 60 then
-		timerCombatStart:Start(26.5-delay)
-		self:ScheduleMethod(26.5-delay, "startTimers")	-- 26 seconds roleplaying
+		timerCombatStart:Start(30.9-delay)
+		self:ScheduleMethod(30.9-delay, "startTimers")	-- 31 seconds roleplaying
 	else 
 		timerCombatStart:Start(-delay)
 		self:ScheduleMethod(8-delay, "startTimers")	-- 8 seconds roleplaying
@@ -93,7 +93,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warned_star = false
 	elseif args:IsSpellID(64598, 62301) then	-- Cosmic Smash
 		timerCastCosmicSmash:Start()
-		timerCDCosmicSmash:Start()
+		timerCDCosmicSmash:Start(27)
 		announceCosmicSmash:Show()
 		specWarnCosmicSmash:Show()
 	end
@@ -101,7 +101,7 @@ end
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(64412) then
-		timerNextPhasePunch:Start()
+		timerNextPhasePunch:Start(14)
 		local amount = args.amount or 1
 		if args:IsPlayer() and amount >= 4 then
 			specWarnPhasePunch:Show(args.amount)
@@ -115,7 +115,7 @@ mod.SPELL_AURA_APPLIED_DOSE = mod.SPELL_AURA_APPLIED
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg == L.Emote_CollapsingStar or msg:find(L.Emote_CollapsingStar) then
-		timerNextCollapsingStar:Start()
+		timerNextCollapsingStar:Start(60)
 	end
 end
 
