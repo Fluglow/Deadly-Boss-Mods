@@ -42,7 +42,7 @@ local timerCombatStart		    = mod:NewTimer(8, "TimerCombatStart", 2457)
 local enrageTimer				= mod:NewBerserkTimer(360)
 local timerNextBigBang			= mod:NewNextTimer(90.5, 64584)
 local timerBigBangCast			= mod:NewCastTimer(8, 64584)
-local timerNextCollapsingStar	= mod:NewTimer(18, "NextCollapsingStar")
+local timerNextCollapsingStar	= mod:NewTimer(12, "NextCollapsingStar")
 local timerCDCosmicSmash		= mod:NewTimer(22, "PossibleNextCosmicSmash")
 local timerCastCosmicSmash		= mod:NewCastTimer(4.5, 62311)
 local timerPhasePunch			= mod:NewBuffActiveTimer(45, 64412)
@@ -61,8 +61,8 @@ function mod:OnCombatStart(delay)
     	end
 	time = tonumber(time)
 	if time == 60 then
-		timerCombatStart:Start(30.9-delay)
-		self:ScheduleMethod(30.9-delay, "startTimers")	-- 31 seconds roleplaying
+		timerCombatStart:Start(21.9-delay)
+		self:ScheduleMethod(21.9-delay, "startTimers")	-- 21 seconds roleplaying
 	else 
 		timerCombatStart:Start(-delay)
 		self:ScheduleMethod(8-delay, "startTimers")	-- 8 seconds roleplaying
