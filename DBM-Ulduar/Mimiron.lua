@@ -31,7 +31,8 @@ mod:AddBoolOption("ShockBlastWarningInP4", mod:IsMelee(), "announce")
 local warnDarkGlare				= mod:NewSpecialWarningSpell(63293)
 
 local enrage 					= mod:NewBerserkTimer(900)
-local timerHardmode				= mod:NewTimer(610, "TimerHardmode", 64582)
+local timerHardmode				= mod:NewTimer(600, "TimerHardmode", 64582)
+local timerRoleplay				= mod:NewTimer(31.5, "TimerRoleplay")
 local timerP1toP2				= mod:NewTimer(43, "TimeToPhase2")
 local timerP2toP3				= mod:NewTimer(32, "TimeToPhase3")
 local timerP3toP4				= mod:NewTimer(25, "TimeToPhase4")
@@ -40,10 +41,10 @@ local timerShockBlast			= mod:NewCastTimer(63631)
 local timerSpinUp				= mod:NewCastTimer(4, 63414)
 local timerDarkGlareCast		= mod:NewCastTimer(10, 63274)
 local timerNextDarkGlare		= mod:NewNextTimer(41, 63274)
-local timerNextShockblast		= mod:NewNextTimer(34, 63631)
-local timerPlasmaBlastCD		= mod:NewCDTimer(30, 64529)
+local timerNextShockblast		= mod:NewNextTimer(49, 63631)
+local timerPlasmaBlastCD		= mod:NewCDTimer(38, 64529)
 local timerShell				= mod:NewBuffActiveTimer(6, 63666)
-local timerFlameSuppressant		= mod:NewCastTimer(60, 64570)
+local timerFlameSuppressant		= mod:NewCastTimer(63, 64570)
 local timerNextFlameSuppressant	= mod:NewNextTimer(10, 65192)
 local timerNextFlames			= mod:NewNextTimer(27.5, 64566)
 local timerNextFrostBomb        = mod:NewNextTimer(30, 64623)
@@ -81,7 +82,11 @@ function mod:OnCombatStart(delay)
 	napalmShellIcon = 7
 	table.wipe(napalmShellTargets)
 	self:NextPhase()
-	timerPlasmaBlastCD:Start(20-delay)
+
+	timerRoleplay:Start(delay)
+	timerPlasmaBlastCD:Start(31.5 + 12 - delay)
+	timerProximityMines:Start(31.5 + 6 - delay)
+
 	if DBM:GetRaidRank() == 2 then
 		lootmethod, _, masterlooterRaidID = GetLootMethod()
 	end
@@ -110,7 +115,7 @@ function mod:Flames()
 		self:ScheduleMethod(18, "Flames")
 	else
 		timerNextFlames:Start()
-		self:ScheduleMethod(27.5, "Flames")
+		self:ScheduleMethod(26, "Flames")
 	end
 end
 
@@ -149,6 +154,7 @@ function mod:SPELL_CAST_START(args)
 	end
 	if args:IsSpellID(64529, 62997) then -- plasma blast
 		timerPlasmaBlastCD:Start()
+		timerNextShockblast:Start(17)
 	end
 	if args:IsSpellID(64570) then
 		timerFlameSuppressant:Start()
@@ -304,11 +310,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 
 	elseif msg == L.YellHardPull then
 		timerHardmode:Start()
-		timerFlameSuppressant:Start()
+		timerFlameSuppressant:Start(31.5 + 62)
 		enrage:Stop()
 		hardmode = true
-		timerNextFlames:Start(6.5)
-		self:ScheduleMethod(6.5, "Flames")
+		timerNextFlames:Start(7.5)
+		self:ScheduleMethod(7.5, "Flames")
 	end
 end
 

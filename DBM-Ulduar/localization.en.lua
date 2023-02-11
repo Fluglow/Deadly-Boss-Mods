@@ -380,6 +380,7 @@ L:SetWarningLocalization{
 
 L:SetTimerLocalization{
 	TimerHardmode	= "Hard mode - Self-destruct",
+	TimerRoleplay   = "Roleplay",
 	TimeToPhase2	= "Phase 2",
 	TimeToPhase3	= "Phase 3",
 	TimeToPhase4	= "Phase 4"
