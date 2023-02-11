@@ -115,6 +115,10 @@ L:SetOptionLocalization{
 	SetIconOnGravityBombTarget	= DBM_CORE_AUTO_ICONS_OPTION_TEXT:format(64234)
 }
 
+L:SetMiscLocalization{
+	YellHardMode = "I'm ready to play!'"
+}
+
 --------------------
 --  Iron Council  --
 --------------------

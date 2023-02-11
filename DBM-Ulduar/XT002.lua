@@ -11,7 +11,8 @@ mod:RegisterEvents(
 	"SPELL_CAST_START",
 	"SPELL_AURA_APPLIED",
 	"SPELL_AURA_REMOVED",
-	"SPELL_DAMAGE"
+	"SPELL_DAMAGE",
+	"CHAT_MSG_MONSTER_YELL"
 )
 
 local warnLightBomb					= mod:NewTargetAnnounce(65121, 3)
@@ -23,8 +24,8 @@ local specWarnConsumption			= mod:NewSpecialWarningMove(64206)--Hard mode void z
 
 local enrageTimer					= mod:NewBerserkTimer(600)
 local timerTympanicTantrumCast		= mod:NewCastTimer(62776)
-local timerTympanicTantrum			= mod:NewBuffActiveTimer(8, 62776)
-local timerTympanicTantrumCD		= mod:NewCDTimer(60, 62776)
+local timerTympanicTantrum			= mod:NewBuffActiveTimer(11, 62776)
+local timerTympanicTantrumCD		= mod:NewCDTimer(56, 62776)
 local timerHeart					= mod:NewCastTimer(30, 63849)
 local timerLightBomb				= mod:NewTargetTimer(9, 65121)
 local timerGravityBomb				= mod:NewTargetTimer(9, 64234)
@@ -36,11 +37,7 @@ mod:AddBoolOption("SetIconOnGravityBombTarget", true)
 function mod:OnCombatStart(delay)
 	enrageTimer:Start(-delay)
 	timerAchieve:Start()
-	if mod:IsDifficulty("heroic10") then
-		timerTympanicTantrumCD:Start(35-delay)
-	else
-		timerTympanicTantrumCD:Start(50-delay)
-	end
+	timerTympanicTantrumCD:Start(45-delay)
 end
 
 function mod:SPELL_CAST_START(args)
@@ -87,6 +84,12 @@ function mod:SPELL_AURA_REMOVED(args)
 		if self.Options.SetIconOnGravityBombTarget then
 			self:SetIcon(args.destName, 0)
 		end
+	end
+end
+
+function mod:CHAT_MSG_MONSTER_YELL(msg)
+	if msg == L.YellHardMode then
+		timerTympanicTantrumCD:Start(45)
 	end
 end
 
