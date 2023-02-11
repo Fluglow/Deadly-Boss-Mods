@@ -46,8 +46,8 @@ local timerPlasmaBlastCD		= mod:NewCDTimer(38, 64529)
 local timerShell				= mod:NewBuffActiveTimer(6, 63666)
 local timerFlameSuppressant		= mod:NewCastTimer(63, 64570)
 local timerNextFlameSuppressant	= mod:NewNextTimer(10, 65192)
-local timerNextFlames			= mod:NewNextTimer(27.5, 64566)
-local timerNextFrostBomb        = mod:NewNextTimer(30, 64623)
+local timerNextFlames			= mod:NewNextTimer(26, 64566)
+local timerNextFrostBomb        = mod:NewNextTimer(40, 64623)
 local timerBombExplosion		= mod:NewCastTimer(15, 65333)
 
 mod:AddBoolOption("PlaySoundOnShockBlast", isMelee)
@@ -226,7 +226,7 @@ function mod:NextPhase()
 			DBM.RangeCheck:Hide()
 		end
 		if hardmode then
-            timerNextFrostBomb:Start(114)
+            timerNextFrostBomb:Start(60)
         end
 
 	elseif phase == 3 then
