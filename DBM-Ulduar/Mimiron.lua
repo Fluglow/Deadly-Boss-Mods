@@ -110,13 +110,8 @@ function mod:OnCombatEnd()
 end
 
 function mod:Flames()
-	if phase == 4 then
-		timerNextFlames:Start(18)
-		self:ScheduleMethod(18, "Flames")
-	else
-		timerNextFlames:Start()
-		self:ScheduleMethod(26, "Flames")
-	end
+	timerNextFlames:Start()
+	self:ScheduleMethod(26, "Flames")
 end
 
 function mod:SPELL_SUMMON(args)
@@ -263,8 +258,6 @@ function mod:NextPhase()
 			DBM.BossHealth:AddBoss(33432, L.MobPhase1)
 		end
 		if hardmode then
-			self:UnscheduleMethod("Flames")
-			self:Flames()
             timerNextFrostBomb:Start(73)
         end
 	end
@@ -313,8 +306,8 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerFlameSuppressant:Start(31.5 + 62)
 		enrage:Stop()
 		hardmode = true
-		timerNextFlames:Start(7.5)
-		self:ScheduleMethod(7.5, "Flames")
+		timerNextFlames:Start(8)
+		self:ScheduleMethod(8, "Flames")
 	end
 end
 
