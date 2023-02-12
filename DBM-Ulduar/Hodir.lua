@@ -24,10 +24,10 @@ local specWarnBitingCold	= mod:NewSpecialWarningMove(62188, false)
 mod:AddBoolOption("PlaySoundOnFlashFreeze", true, "announce")
 mod:AddBoolOption("YellOnStormCloud", true, "announce")
 
-local enrageTimer			= mod:NewBerserkTimer(475)
+local enrageTimer			= mod:NewBerserkTimer(480)
 local timerFlashFreeze		= mod:NewCastTimer(9, 61968)
 local timerFrozenBlows		= mod:NewBuffActiveTimer(20, 63512)
-local timerFlashFrCD		= mod:NewCDTimer(50, 61968)
+local timerFlashFrCD		= mod:NewCDTimer(54, 61968)
 local timerAchieve			= mod:NewAchievementTimer(179, 3182, "TimerSpeedKill")
 
 mod:AddBoolOption("SetIconOnStormCloud")
@@ -35,7 +35,7 @@ mod:AddBoolOption("SetIconOnStormCloud")
 function mod:OnCombatStart(delay)
 	enrageTimer:Start(-delay)
 	timerAchieve:Start()
-	timerFlashFrCD:Start(-delay)
+	timerFlashFrCD:Start(40-delay)
 end
 
 function mod:SPELL_CAST_START(args)
