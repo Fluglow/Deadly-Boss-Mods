@@ -47,13 +47,13 @@ mod:AddBoolOption("WarningSqueeze", true, "announce")
 local enrageTimer					= mod:NewBerserkTimer(900)
 local timerFervor					= mod:NewTargetTimer(15, 63138)
 local brainportal					= mod:NewTimer(20, "NextPortal")
-local timerLunaricGaze				= mod:NewCastTimer(4, 64163)
-local timerNextLunaricGaze			= mod:NewCDTimer(8.5, 64163)
+local timerLunaticGaze			    = mod:NewCastTimer(4, 64163)
+local timerNextLunaticGaze 			= mod:NewCDTimer(8.2, 64163)
 local timerEmpower					= mod:NewCDTimer(46, 64465)
 local timerEmpowerDuration			= mod:NewBuffActiveTimer(10, 64465)
 local timerMadness 					= mod:NewCastTimer(60, 64059)
 local timerCastDeafeningRoar		= mod:NewCastTimer(2.3, 64189)
-local timerNextDeafeningRoar		= mod:NewNextTimer(30, 64189)
+local timerNextDeafeningRoar		= mod:NewNextTimer(17, 64189)
 local timerAchieve					= mod:NewAchievementTimer(420, 3012, "TimerSpeedKill")
 
 mod:AddBoolOption("ShowSaraHealth")
@@ -107,7 +107,7 @@ function mod:SPELL_CAST_START(args)
 		specWarnMadnessOutNow:Schedule(55)
 	elseif args:IsSpellID(64189) then		--Deafening Roar
 		timerNextDeafeningRoar:Start()
-		warnDeafeningRoarSoon:Schedule(55)
+		warnDeafeningRoarSoon:Schedule(30)
 		timerCastDeafeningRoar:Start()
 		specWarnDeafeningRoar:Show()
 	elseif args:IsSpellID(63138) then		--Sara's Fervor
@@ -187,7 +187,7 @@ function mod:SPELL_AURA_APPLIED(args)
 			end
 		end
 	elseif args:IsSpellID(64167, 64163) then	-- Lunatic Gaze (reduces sanity)
-		timerLunaricGaze:Start()
+		timerLunaticGaze:Start()
 	elseif args:IsSpellID(64465) then
 		timerEmpower:Start()
 		timerEmpowerDuration:Start()
@@ -201,7 +201,7 @@ function mod:SPELL_AURA_REMOVED(args)
 			self:SendSync("Phase3")			-- Sync this because you don't get it in your combat log if you are in brain room.
 		end
 	elseif args:IsSpellID(64167, 64163) then	-- Lunatic Gaze
-		timerNextLunaricGaze:Start()
+		timerNextLunaticGaze:Start()
 	end
 end
 
@@ -227,11 +227,12 @@ function mod:OnSync(msg)
 	if msg == "Phase3" then
 		warnP3:Show()
 		phase = 3
-		brainportal:Stop()
+		brainportal:Cancel()
         timerEmpower:Start()
         warnEmpowerSoon:Schedule(40)	
 		warnBrainPortalSoon:Cancel()
-		timerNextDeafeningRoar:Start(30)
-		warnDeafeningRoarSoon:Schedule(25)
+		timerNextDeafeningRoar:Start(14)
+		timerNextLunaticGaze:Start(12)
+		warnDeafeningRoarSoon:Schedule(10)
 	end
 end
