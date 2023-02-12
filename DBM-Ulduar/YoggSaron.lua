@@ -174,7 +174,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then 
 			specWarnFervor:Show()
 		end
-	elseif args:IsSpellID(63894) then	-- Shadowy Barrier of Yogg-Saron (this is happens when p2 starts)
+	elseif args:IsSpellID(64775) then	-- Shadowy Barrier of Sara (this is happens when p2 starts)
 		phase = 2
 		brainportal:Start(60)
 		warnBrainPortalSoon:Schedule(57)
