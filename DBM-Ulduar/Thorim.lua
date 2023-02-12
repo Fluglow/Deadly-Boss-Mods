@@ -28,8 +28,8 @@ mod:AddBoolOption("AnnounceFails", false, "announce")
 local enrageTimer				= mod:NewBerserkTimer(369)
 local timerStormhammer			= mod:NewCastTimer(16, 62042)
 local timerLightningCharge	 	= mod:NewCDTimer(16, 62466) 
-local timerUnbalancingStrike	= mod:NewCastTimer(26, 62130)
-local timerHardmode				= mod:NewTimer(175, "TimerHardmode", 62042)
+local timerUnbalancingStrike	= mod:NewCastTimer(19, 62130)
+local timerHardmode				= mod:NewTimer(180, "TimerHardmode", 62042)
 
 mod:AddBoolOption("RangeFrame")
 
@@ -119,6 +119,7 @@ function mod:OnSync(event, arg)
 		warnPhase2:Show()
 		enrageTimer:Stop()
 		timerHardmode:Stop()
+		timerUnbalancingStrike:Start(15)
 		enrageTimer:Start(300)
 	end
 end
