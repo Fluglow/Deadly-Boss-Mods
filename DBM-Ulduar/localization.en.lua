@@ -412,7 +412,7 @@ L:SetMiscLocalization{
 	MobPhase1		= "Leviathan Mk II",
 	MobPhase2		= "VX-001",
 	MobPhase3		= "Aerial Command Unit",
-	YellPull		= "We haven't much time, friends! You're going to help me test out my latest and greatest creation. Now, before you change your minds, remember, that you kind of owe it to me after the mess you made with the XT-002.",
+	YellPull		= "Oh, my! I wasn't expecting company! The workshop is such a mess! How embarrassing!",
 	YellHardPull	= "Self-destruct sequence initiated.",
 	YellPhase2		= "WONDERFUL! Positively marvelous results! Hull integrity at 98.9 percent! Barely a dent! Moving right along.",
 	YellPhase3		= "Thank you, friends! Your efforts have yielded some fantastic data! Now, where did I put- oh, there it is!",
