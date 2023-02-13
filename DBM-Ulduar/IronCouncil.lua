@@ -88,9 +88,6 @@ function mod:SPELL_CAST_START(args)
 		warnSupercharge:Show()
 	elseif args:IsSpellID(63479, 61879) then	-- Chain light
 		warnChainlight:Show()
-	elseif args:IsSpellID(63483, 61915) then	-- LightningWhirl
-		timerLightningWhirl:Start()
-		timerCDLightningWhirl:Start()
 	elseif args:IsSpellID(61903, 63493) then	-- Fusion Punch
 		warnFusionPunch:Show()
 		timerFusionPunchCast:Start()
@@ -108,6 +105,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(64321, 61974) then	-- Rune of Power
 		self:ScheduleMethod(0.1, "RuneTarget")
 		timerRuneofPower:Start()
+	elseif args:IsSpellID(63483, 61915) then	-- Lightning Whirl
+		timerLightningWhirl:Start()
+		timerCDLightningWhirl:Start()
 	elseif args:IsSpellID(61869, 63481) then	-- Overload
 		timerOverload:Start()
 		if self.Options.AlwaysWarnOnOverload or UnitName("target") == L.StormcallerBrundir then
