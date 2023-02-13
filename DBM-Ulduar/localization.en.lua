@@ -116,7 +116,7 @@ L:SetOptionLocalization{
 }
 
 L:SetMiscLocalization{
-	YellHardMode = "I'm ready to play!'"
+	YellHardMode = "I'm ready to play!"
 }
 
 --------------------
