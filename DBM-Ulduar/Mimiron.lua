@@ -15,8 +15,7 @@ mod:RegisterEvents(
 	"CHAT_MSG_MONSTER_YELL",
 	"SPELL_AURA_REMOVED",
 	"UNIT_SPELLCAST_CHANNEL_STOP",
-	"CHAT_MSG_LOOT",
-	"SPELL_SUMMON"
+	"CHAT_MSG_LOOT"
 )
 
 local blastWarn					= mod:NewTargetAnnounce(64529, 4)
@@ -50,6 +49,8 @@ local timerNextFlames			= mod:NewNextTimer(26, 64566)
 local timerNextFrostBomb        = mod:NewNextTimer(60, 64623)
 local timerBombExplosion		= mod:NewCastTimer(13.5, 65333)
 local timerNextBarrage			= mod:NewNextTimer(65, 63293)
+local timerNextBombBot			= mod:NewNextTimer(19, 63811)
+local timerAerialGrounded		= mod:NewBuffActiveTimer(20, 64436)
 
 mod:AddBoolOption("PlaySoundOnShockBlast", isMelee)
 mod:AddBoolOption("PlaySoundOnDarkGlare", true)
@@ -68,6 +69,8 @@ local lastSpinUp				= 0
 local is_spinningUp				= false
 local napalmShellTargets = {}
 local napalmShellIcon 	= 7
+
+local isGrounded 				= false
 
 local function warnNapalmShellTargets()
 	shellWarn:Show(table.concat(napalmShellTargets, "<, >"))
@@ -115,12 +118,16 @@ function mod:Flames()
 	self:ScheduleMethod(26, "Flames")
 end
 
-function mod:SPELL_SUMMON(args)
-	if args:IsSpellID(63811) then -- Bomb Bot
-		warnBombSpawn:Show()
+function mod:BombBotTimer()
+	if phase == 3 and isGrounded then
+		timerNextBombBot:Start()
+		self:ScheduleMethod(19, "BombBotTimer")
 	end
 end
 
+function mod:groundedCallback()
+	isGrounded = false
+end
 
 function mod:UNIT_SPELLCAST_CHANNEL_STOP(unit, spell)
 	if spell == spinningUp and GetTime() - lastSpinUp < 3.9 then
@@ -182,6 +189,13 @@ function mod:SPELL_AURA_APPLIED(args)
 		if self.Options.SetIconOnPlasmaBlast then
 			self:SetIcon(args.destName, 8, 6)
 		end
+	elseif args:IsSpellID(64582) and args.destName == "Bomb Bot" then
+		-- Bomb Bot spawn detection hackfix, HM only.
+		-- If the boss is grounded, the bomb bot timer will still reset.
+		-- To cover for this case, start the timer again in 19s if the boss is grounded.
+		warnBombSpawn:Show()
+		timerNextBombBot:Start()
+		self:ScheduleMethod(19, "BombBotTimer")
 	end
 end
 
@@ -206,9 +220,15 @@ function mod:SPELL_CAST_SUCCESS(args)
 		timerNextDarkGlare:Schedule(19)			-- 4 (cast spinup) + 15 sec (cast dark glare)
 		DBM:Schedule(0.15, show_warning_for_spinup)	-- wait 0.15 and then announce it, otherwise it will sometimes fail
 		lastSpinUp = GetTime()
-	
+
 	elseif args:IsSpellID(65192) then
 		timerNextFlameSuppressant:Start()
+
+	elseif args:IsSpellID(64444) then
+		isGrounded = true
+		timerAerialGrounded:Start()
+		self:UnscheduleMethod("groundedCallback")
+		self:ScheduleMethod(20, "groundedCallback")
 	end
 end
 
@@ -246,6 +266,8 @@ function mod:NextPhase()
 		timerDarkGlareCast:Cancel()
 		timerNextDarkGlare:Cancel()
 		timerNextFrostBomb:Cancel()
+		timerNextBarrage:Cancel()
+		timerNextBombBot:Start(48)
 		timerP2toP3:Start()
 		if self.Options.HealthFrame then
 			DBM.BossHealth:Clear()
@@ -253,6 +275,10 @@ function mod:NextPhase()
 		end
 
 	elseif phase == 4 then
+		timerNextBombBot:Cancel()
+		timerAerialGrounded:Cancel()
+		isGrounded = false
+
 		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			if masterlooterRaidID then
 				SetLootMethod(lootmethod, "raid"..masterlooterRaidID)
@@ -276,7 +302,7 @@ function mod:NextPhase()
 	end
 end
 
-do 
+do
 	local count = 0
 	local last = 0
 	local lastPhaseChange = 0
@@ -319,6 +345,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		timerFlameSuppressant:Start(31.5 + 62)
 		enrage:Stop()
 		hardmode = true
+		timerRoleplay:Start(delay)
 		timerNextFlames:Start(8)
 		self:ScheduleMethod(8, "Flames")
 	end
