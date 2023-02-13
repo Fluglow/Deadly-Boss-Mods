@@ -158,7 +158,12 @@ function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(64623) then
 		warnFrostBomb:Show()
 		timerBombExplosion:Start()
-		timerNextFrostBomb:Start()
+
+		if phase == 4 then
+			timerNextFrostBomb:Start(40)
+		else
+			timerNextFrostBomb:Start()
+		end
 	end
 end
 
@@ -256,6 +261,9 @@ function mod:NextPhase()
 			end
 		end
 		timerP3toP4:Start()
+		timerNextShockblast:Start(67)
+		timerNextBarrage:Start(87)
+
 		if self.Options.HealthFramePhase4 or self.Options.HealthFrame then
 			DBM.BossHealth:Show(L.name)
 			DBM.BossHealth:AddBoss(33670, L.MobPhase3)
@@ -263,7 +271,7 @@ function mod:NextPhase()
 			DBM.BossHealth:AddBoss(33432, L.MobPhase1)
 		end
 		if hardmode then
-            timerNextFrostBomb:Start(73)
+            timerNextFrostBomb:Start(37)
         end
 	end
 end
