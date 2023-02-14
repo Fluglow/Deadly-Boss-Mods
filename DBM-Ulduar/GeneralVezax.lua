@@ -31,7 +31,7 @@ local timerSurgeofDarkness		= mod:NewBuffActiveTimer(10, 62662)
 local timerNextSurgeofDarkness	= mod:NewBuffActiveTimer(62, 62662)
 local timerSaroniteVapors		= mod:NewNextTimer(30, 63322)
 local timerLifeLeech			= mod:NewTargetTimer(10, 63276)
-local timerHardmode				= mod:NewTimer(189, "hardmodeSpawn")
+local timerHardmode				= mod:NewTimer(180, "hardmodeSpawn")
 
 mod:AddBoolOption("YellOnLifeLeech", true, "announce")
 mod:AddBoolOption("YellOnShadowCrash", true, "announce")
@@ -41,10 +41,13 @@ mod:AddBoolOption("CrashArrow")
 mod:AddBoolOption("BypassLatencyCheck", false)--Use old scan method without syncing or latency check (less reliable but not dependant on other DBM users in raid)
 
 
+local vaporCount = 0
+
 function mod:OnCombatStart(delay)
 	timerEnrage:Start(-delay)
 	timerHardmode:Start(-delay)
 	timerNextSurgeofDarkness:Start(-delay)
+	timerSaroniteVapors:Start()
 end
 
 function mod:SPELL_CAST_START(args)
@@ -147,6 +150,8 @@ end
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(emote)
 	if emote == L.EmoteSaroniteVapors or emote:find(L.EmoteSaroniteVapors) then
 		timerSaroniteVapors:Start()
+		vaporCount = vaporCount + 1
+		timerHardmode:Start((6 - vaporCount) * 30)
 	end
 end
 
