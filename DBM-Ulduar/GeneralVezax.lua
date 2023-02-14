@@ -151,7 +151,9 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(emote)
 	if emote == L.EmoteSaroniteVapors or emote:find(L.EmoteSaroniteVapors) then
 		timerSaroniteVapors:Start()
 		vaporCount = vaporCount + 1
-		timerHardmode:Start((6 - vaporCount) * 30)
+		if vaporCount < 6 then
+			timerHardmode:Start((6 - vaporCount) * 30)
+		end
 	end
 end
 
