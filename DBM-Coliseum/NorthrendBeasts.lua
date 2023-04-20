@@ -40,24 +40,24 @@ local specWarnCharge		= mod:NewSpecialWarning("SpecialWarningCharge")
 local specWarnChargeNear	= mod:NewSpecialWarning("SpecialWarningChargeNear")
 local specWarnTranq			= mod:NewSpecialWarning("SpecialWarningTranq", mod:CanRemoveEnrage())
 
-local enrageTimer			= mod:NewBerserkTimer(223)
+local enrageTimer			= mod:NewBerserkTimer(186)
 local timerCombatStart		= mod:NewTimer(23, "TimerCombatStart", 2457)
 local timerNextBoss			= mod:NewTimer(190, "TimerNextBoss", 2457)
 local timerSubmerge			= mod:NewTimer(45, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") 
-local timerEmerge			= mod:NewTimer(10, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
+local timerEmerge			= mod:NewTimer(6, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 
 local timerBreath			= mod:NewCastTimer(5, 67650)
-local timerNextStomp		= mod:NewNextTimer(20, 66330)
+local timerNextStomp		= mod:NewNextTimer(15, 66330)
 local timerNextImpale		= mod:NewNextTimer(10, 67477, nil, mod:IsTank() or mod:IsHealer())
 local timerRisingAnger      = mod:NewNextTimer(20.5, 66636)
 local timerStaggeredDaze	= mod:NewBuffActiveTimer(15, 66758)
-local timerNextCrash		= mod:NewCDTimer(55, 67662)
+local timerNextCrash 		= mod:NewCDTimer(47, 67662)
 local timerSweepCD			= mod:NewCDTimer(17, 66794, nil, mod:IsMelee())
 local timerSlimePoolCD		= mod:NewCDTimer(12, 66883, nil, mod:IsMelee())
 local timerAcidicSpewCD		= mod:NewCDTimer(21, 66819)
 local timerMoltenSpewCD		= mod:NewCDTimer(21, 66820)
-local timerParalyticSprayCD	= mod:NewCDTimer(21, 66901)
-local timerBurningSprayCD	= mod:NewCDTimer(21, 66902)
+local timerParalyticSprayCD	= mod:NewCDTimer(14, 66901)
+local timerBurningSprayCD	= mod:NewCDTimer(14, 66902)
 local timerParalyticBiteCD	= mod:NewCDTimer(25, 66824, nil, mod:IsTank())
 local timerBurningBiteCD	= mod:NewCDTimer(15, 66879, nil, mod:IsTank())
 
@@ -75,6 +75,7 @@ local phases				= {}
 local DreadscaleActive		= true  	-- Is dreadscale moving?
 local DreadscaleDead	= false
 local AcidmawDead	= false
+local submerged = false;
 
 local function updateHealthFrame(phase)
 	if phases[phase] then
@@ -100,12 +101,11 @@ function mod:OnCombatStart(delay)
 	DreadscaleActive = true
 	DreadscaleDead = false
 	AcidmawDead = false
-	specWarnSilence:Schedule(37-delay)
+	specWarnSilence:Schedule(26-delay)
 	if self:IsDifficulty("heroic10", "heroic25") then
 		timerNextBoss:Start(175 - delay)
-		timerNextBoss:Schedule(170)
 	end
-	timerNextStomp:Start(38-delay)
+	timerNextStomp:Start(28-delay)
 	timerRisingAnger:Start(48-delay)
 	timerCombatStart:Start(-delay)
 	updateHealthFrame(1)
@@ -129,31 +129,33 @@ function mod:warnBile()
 end
 
 function mod:WormsEmerge()
+	submerged = false;
 	timerSubmerge:Show()
 	if not AcidmawDead then
 		if DreadscaleActive then
-			timerSweepCD:Start(16)
-			timerParalyticSprayCD:Start(9)			
+			timerSweepCD:Start(15)
+			timerParalyticSprayCD:Start(8)
 		else
-			timerSlimePoolCD:Start(14)
-			timerParalyticBiteCD:Start(5)			
+			timerSlimePoolCD:Start(15)
+			timerParalyticBiteCD:Start(7)
 			timerAcidicSpewCD:Start(10)
 		end
 	end
 	if not DreadscaleDead then
 		if DreadscaleActive then
-			timerSlimePoolCD:Start(14)
+			timerSlimePoolCD:Start(15)
 			timerMoltenSpewCD:Start(10)
-			timerBurningBiteCD:Start(5)
+			timerBurningBiteCD:Start(7)
 		else
-			timerSweepCD:Start(16)
-			timerBurningSprayCD:Start(17)
+			timerSweepCD:Start(15)
+			timerBurningSprayCD:Start(8)
 		end
-	end	
+	end
 	self:ScheduleMethod(45, "WormsSubmerge")
 end
 
 function mod:WormsSubmerge()
+	submerged = true;
 	timerEmerge:Show()
 	timerSweepCD:Cancel()
 	timerSlimePoolCD:Cancel()
@@ -206,7 +208,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 	if args:IsSpellID(67477, 66331, 67478, 67479) then		-- Impale
 		timerNextImpale:Start()
 		warnImpaleOn:Show(args.destName)
-		if (args.amount >= 3 and not self:IsDifficulty("heroic10", "heroic25") ) or ( args.amount >= 2 and self:IsDifficulty("heroic10", "heroic25") ) then 
+		if (args.amount >= 3 and not self:IsDifficulty("heroic10", "heroic25") ) or ( args.amount >= 2 and self:IsDifficulty("heroic10", "heroic25") ) then
 			if args:IsPlayer() then
 				specWarnImpale3:Show(args.amount)
 			end
@@ -229,7 +231,7 @@ function mod:SPELL_CAST_START(args)
 		warnFireBomb:Show()
 	elseif args:IsSpellID(66330, 67647, 67648, 67649) then		-- Staggering Stomp
 		timerNextStomp:Start()
-		specWarnSilence:Schedule(19)							-- prewarn ~1,5 sec before next
+		specWarnSilence:Schedule(14)							-- prewarn ~1,5 sec before next
 	elseif args:IsSpellID(66794, 67644, 67645, 67646) then		-- Sweep stationary worm
 		timerSweepCD:Start()
 	elseif args:IsSpellID(66821) then							-- Molten spew
@@ -304,8 +306,9 @@ end
 
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Phase2 or msg:find(L.Phase2) then
-		self:ScheduleMethod(17, "WormsEmerge")
+		self:ScheduleMethod(15, "WormsEmerge")
 		timerCombatStart:Show(15)
+		timerNextBoss:Start(15 + 150);
 		updateHealthFrame(2)
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
@@ -316,9 +319,11 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 			enrageTimer:Start()
 		end
 		self:UnscheduleMethod("WormsSubmerge")
-		timerNextCrash:Start(45)
+		timerNextCrash:Start(38)
 		timerNextBoss:Cancel()
 		timerSubmerge:Cancel()
+		timerMoltenSpewCD:Cancel()
+		timerSlimePoolCD:Cancel()
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Hide()
 		end
@@ -345,6 +350,10 @@ function mod:UNIT_DIED(args)
 		if DreadscaleDead then
 			DBM.BossHealth:RemoveBoss(35144)
 			DBM.BossHealth:RemoveBoss(34799)
+		end
+		if submerged then
+			self:UnscheduleMethod("WormsEmerge");
+			self:WormsEmerge();
 		end
 	elseif cid == 34799 then
 		DreadscaleDead = true
