@@ -80,12 +80,13 @@ local timerDeathgripCD		= mod:NewCDTimer(35, 66017)
 local timerBladestormCD		= mod:NewCDTimer(90, 65947)
 
 local specWarnHellfire		= mod:NewSpecialWarningMove(68147)
+local specWarnSteadyShot	= mod:NewSpecialWarning("SpecWarnSteadyShot")
 local specWarnHandofProt	= mod:NewSpecialWarningDispel(66009, isDispeller)
 local specWarnDivineShield	= mod:NewSpecialWarningDispel(66010, isDispeller) 
 local specWarnIceBlock		= mod:NewSpecialWarningDispel(65802, isDispeller)
 
 mod:AddBoolOption("PlaySoundOnBladestorm", mod:IsMelee())
-
+mod:AddBoolOption("WarnOnSteadyShot", true)
 
 function mod:OnCombatStart(delay)
 end
@@ -124,6 +125,9 @@ function mod:SPELL_CAST_SUCCESS(args)
 		else
 			timerDeathgripCD:Start()
 		end
+
+	elseif args:IsSpellID(65867) and self.Options.WarnOnSteadyShot then
+		specWarnSteadyShot:Show()
 	end
 end
 

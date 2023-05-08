@@ -115,6 +115,7 @@ L:SetTimerLocalization{
 }
 
 L:SetWarningLocalization{
+	SpecWarnSteadyShot	= "Steady Shot - CC now"
 }
 
 L:SetMiscLocalization{
@@ -155,7 +156,8 @@ L:SetMiscLocalization{
 } 
 
 L:SetOptionLocalization{
-	PlaySoundOnBladestorm	= "Play sound on Bladestorm"
+	PlaySoundOnBladestorm	= "Play sound on Bladestorm",
+	WarnOnSteadyShot		= "Show warning when Steady Shot is cast"
 }
 
 ---------------------
