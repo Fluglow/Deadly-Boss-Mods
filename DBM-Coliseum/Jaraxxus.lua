@@ -40,7 +40,7 @@ local specWarnNetherPower		= mod:NewSpecialWarning("SpecWarnNetherPower", isDisp
 local specWarnFelInferno		= mod:NewSpecialWarningMove(68718)
 local SpecWarnFelFireball		= mod:NewSpecialWarning("SpecWarnFelFireball", false)
 local SpecWarnFelFireballDispel	= mod:NewSpecialWarningDispel(66965, isMagicDispeller)
-local specWarnTouch				= mod:NewSpecialWarningYou("SpecWarnTouch", 66209)
+local specWarnTouch				= mod:NewSpecialWarningYou(66209)
 
 local timerCombatStart			= mod:NewTimer(84, "TimerCombatStart", 2457)--rollplay for first pull
 local enrageTimer				= mod:NewBerserkTimer(600)
@@ -57,7 +57,6 @@ mod:AddBoolOption("LegionFlameWhisper", false, "announce")
 mod:AddBoolOption("LegionFlameRunSound", true)
 mod:AddBoolOption("LegionFlameIcon", true)
 mod:AddBoolOption("IncinerateFleshIcon", true)
-mod:AddBoolOption("SpecWarnTouch", true)
 
 mod:RemoveOption("HealthFrame")
 mod:AddBoolOption("IncinerateShieldFrame", true, "misc")
@@ -179,7 +178,7 @@ function mod:SPELL_AURA_APPLIED(args)
 
 	elseif args:IsSpellID(66209) then  -- Touch of Jaraxxus
 		timerTouchCD:Start()
-		if args:IsPlayer() and self.Options.SpecWarnTouch then
+		if args:IsPlayer() then
 			specWarnTouch:Show()
 			SendChatMessage("Touch on me!", "SAY")
 		end
