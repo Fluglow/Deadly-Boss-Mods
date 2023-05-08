@@ -41,7 +41,7 @@ local timerEmerge			= mod:NewTimer(62, "TimerEmerge", "Interface\\AddOns\\DBM-Co
 local warnSubmerge			= mod:NewAnnounce("WarnSubmerge", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local warnSubmergeSoon		= mod:NewAnnounce("WarnSubmergeSoon", 1, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 local specWarnSubmergeSoon	= mod:NewSpecialWarning("specWarnSubmergeSoon", mod:IsTank())
-local timerSubmerge			= mod:NewTimer(75, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
+local timerSubmerge			= mod:NewTimer(80, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 
 -- Phases
 local warnPhase3			= mod:NewPhaseAnnounce(3)
@@ -76,7 +76,7 @@ function mod:OnCombatStart(delay)
 	self:ScheduleMethod(10-delay, "Adds")
 	warnSubmergeSoon:Schedule(70-delay)
 	specWarnSubmergeSoon:Schedule(70-delay)
-	timerSubmerge:Start(80-delay)
+	timerSubmerge:Start(-delay)
 	enrageTimer:Start(-delay)
 	timerFreezingSlash:Start(-delay)
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
