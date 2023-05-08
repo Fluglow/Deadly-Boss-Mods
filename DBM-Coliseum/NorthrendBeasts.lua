@@ -101,6 +101,7 @@ function mod:OnCombatStart(delay)
 	DreadscaleActive = true
 	DreadscaleDead = false
 	AcidmawDead = false
+	submerged = false
 	specWarnSilence:Schedule(26-delay)
 	if self:IsDifficulty("heroic10", "heroic25") then
 		timerNextBoss:Start(175 - delay)
