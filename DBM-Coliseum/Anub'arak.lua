@@ -139,6 +139,10 @@ function mod:SPELL_AURA_APPLIED(args)
 			self:SetIcon(args.destName, 8, 15)
 		end
 		warnPursue:Show(args.destName)
+		if Burrowed == false then  -- Submerge timer does not start if player doesn't receive Anub's emote (range?).
+			self:submerge(-4)
+		end
+
 	elseif args:IsSpellID(66013, 67700, 68509, 68510) then		-- Penetrating Cold
 		if args:IsPlayer() then
 			specWarnPCold:Show()
@@ -190,8 +194,8 @@ function mod:SPELL_CAST_START(args)
 			mod:ScheduleMethod(0.1, "RemoveBuffs")
 		end
 		if mod:IsDifficulty("normal10") or mod:IsDifficulty("normal25") then
-			timerAdds:Cancel() 
-			warnAdds:Cancel() 
+			timerAdds:Cancel()
+			warnAdds:Cancel()
 			self:UnscheduleMethod("Adds")
 		end
 	elseif args:IsSpellID(66134) then							-- Shadow Strike
@@ -199,6 +203,17 @@ function mod:SPELL_CAST_START(args)
 		specWarnShadowStrike:Show()
 		warnShadowStrike:Show()
 	end
+end
+
+function mod:submerge(delay)
+	Burrowed = true
+	timerAdds:Cancel()
+	warnAdds:Cancel()
+	warnSubmerge:Show()
+	warnEmergeSoon:Schedule(52 + delay)
+	timerEmerge:Start(delay)
+	timerFreezingSlash:Stop()
+	self:ScheduleMethod(62 + delay, "emerge")
 end
 
 function mod:emerge()
@@ -221,14 +236,7 @@ end
 
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg and msg:find(L.Burrow) then
-		Burrowed = true
-		timerAdds:Cancel()
-		warnAdds:Cancel()
-		warnSubmerge:Show()
-		warnEmergeSoon:Schedule(52)
-		timerEmerge:Start()
-		timerFreezingSlash:Stop()
-		self:ScheduleMethod(62, "emerge")
+		self:submerge(0)
 	end
 end
 
