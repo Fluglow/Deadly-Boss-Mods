@@ -52,7 +52,7 @@ local isPhase3  			= false
 local specWarnPCold			= mod:NewSpecialWarningYou(68510, false)
 local timerPCold			= mod:NewBuffActiveTimer(18, 68509)
 local PColdCountdown		= mod:NewCountdown(68509, "PlayPColdCountdown", false)
-local timerNextPCold		= mod:NewCDTimer(68509, 20)
+local timerNextPCold		= mod:NewCDTimer(20, 68509)
 
 mod:AddBoolOption("SetIconsOnPCold", true)
 mod:AddBoolOption("AnnouncePColdIcons", false)
