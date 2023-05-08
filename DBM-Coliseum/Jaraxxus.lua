@@ -40,6 +40,7 @@ local specWarnNetherPower		= mod:NewSpecialWarning("SpecWarnNetherPower", isDisp
 local specWarnFelInferno		= mod:NewSpecialWarningMove(68718)
 local SpecWarnFelFireball		= mod:NewSpecialWarning("SpecWarnFelFireball", false)
 local SpecWarnFelFireballDispel	= mod:NewSpecialWarningDispel(66965, isMagicDispeller)
+local specWarnTouch				= mod NewSpecialWarningYou("SpecWarnTouch", 66209)
 
 local timerCombatStart			= mod:NewTimer(84, "TimerCombatStart", 2457)--rollplay for first pull
 local enrageTimer				= mod:NewBerserkTimer(600)
@@ -50,11 +51,13 @@ local timerFlesh				= mod:NewTargetTimer(12, 67049)
 local timerFleshCD				= mod:NewCDTimer(23, 67051) 
 local timerPortalCD				= mod:NewCDTimer(120, 67900)
 local timerVolcanoCD			= mod:NewCDTimer(120, 67901)
+local timerTouchCD				= mod:NewCDTimer(15, 66209)
 
 mod:AddBoolOption("LegionFlameWhisper", false, "announce")
 mod:AddBoolOption("LegionFlameRunSound", true)
 mod:AddBoolOption("LegionFlameIcon", true)
 mod:AddBoolOption("IncinerateFleshIcon", true)
+mod:AddBoolOption("SpecWarnTouch", true)
 
 mod:RemoveOption("HealthFrame")
 mod:AddBoolOption("IncinerateShieldFrame", true, "misc")
@@ -63,6 +66,10 @@ function mod:OnCombatStart(delay)
 	if self.Options.IncinerateShieldFrame then
 		DBM.BossHealth:Show(L.name)
 		DBM.BossHealth:AddBoss(34780, L.name)
+	end
+
+	if mod:IsDifficulty("heroic25") then
+		timerTouchCD:Start(-delay);
 	end
 	timerPortalCD:Start(20-delay)
 	warnPortalSoon:Schedule(15-delay)
@@ -169,6 +176,13 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsSpellID(66532, 66963, 66964, 66965) then		-- Fel Fireball (announce if tank gets debuff for dispel)
 		warnFelFireball:Show()
 		SpecWarnFelFireballDispel:Show(args.destName)
+
+	elseif args:IsSpellID(66209) then  -- Touch of Jaraxxus
+		timerTouchCD:Start()
+		if args:IsPlayer() and self.Options.SpecWarnTouch then
+			specWarnTouch:Show()
+			SendChatMessage("Touch on me!", "SAY")
+		end
 	end
 end
 
