@@ -151,7 +151,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		timerPCold:Show()
 
-		if self.Options.ShowPColdTimer and isPhase3 then
+		if isPhase3 then
 			timerNextPCold:Start()
 			PColdCountdown:Schedule(17, 3)
 		end
