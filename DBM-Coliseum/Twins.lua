@@ -192,7 +192,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		specWarnEmpoweredLight:Show()
 	elseif args:IsSpellID(65950, 67296, 67297, 67298) then	-- Touch of Light
 		if args:IsPlayer() then
-			warnPersonalDebuff:Show(true)
+			self:warnPersonalDebuff(true)
 		end
 		timerLightTouch:Start(args.destName)
 		if self.Options.SetIconOnDebuffTarget then
@@ -204,7 +204,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:ScheduleMethod(0.9, "warnDebuff")
 	elseif args:IsSpellID(66001, 67281, 67282, 67283) then	-- Touch of Darkness
 		if args:IsPlayer() then
-			warnPersonalDebuff:Show(false)
+			self:warnPersonalDebuff(false)
 		end
 		timerDarkTouch:Start(args.destName)
 		if self.Options.SetIconOnDebuffTarget then
