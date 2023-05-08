@@ -157,7 +157,7 @@ L:SetMiscLocalization{
 
 L:SetOptionLocalization{
 	PlaySoundOnBladestorm	= "Play sound on Bladestorm",
-	WarnOnSteadyShot		= "Show warning when Steady Shot is cast"
+	SpecWarnSteadyShot		= "Show special warning for $spell:65867",
 }
 
 ---------------------

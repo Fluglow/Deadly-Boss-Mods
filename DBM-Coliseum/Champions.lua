@@ -86,7 +86,6 @@ local specWarnDivineShield	= mod:NewSpecialWarningDispel(66010, isDispeller)
 local specWarnIceBlock		= mod:NewSpecialWarningDispel(65802, isDispeller)
 
 mod:AddBoolOption("PlaySoundOnBladestorm", mod:IsMelee())
-mod:AddBoolOption("WarnOnSteadyShot", true)
 
 function mod:OnCombatStart(delay)
 end
@@ -126,7 +125,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			timerDeathgripCD:Start()
 		end
 
-	elseif args:IsSpellID(65867) and self.Options.WarnOnSteadyShot then
+	elseif args:IsSpellID(65867) then
 		specWarnSteadyShot:Show()
 	end
 end
