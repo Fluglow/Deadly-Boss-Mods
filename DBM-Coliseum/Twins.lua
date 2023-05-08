@@ -123,7 +123,7 @@ function mod:warnPersonalDebuff(isLight)
 		elseif light and self.Options.SpecialWarnOnDebuff then
 			specWarnDebuffLight:Show()
 			if self.Options.YellOnOppositeDebuff then
-				SendChatMessage("Light Essence on me!", "SAY")
+				SendChatMessage("Dark Essence on me!", "SAY")
 			end
 		end
 	end
