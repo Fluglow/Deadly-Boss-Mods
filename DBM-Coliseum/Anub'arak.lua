@@ -35,7 +35,7 @@ mod:AddBoolOption("PursueIcon")
 -- Emerge
 local warnEmerge			= mod:NewAnnounce("WarnEmerge", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 local warnEmergeSoon		= mod:NewAnnounce("WarnEmergeSoon", 1, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
-local timerEmerge			= mod:NewTimer(65, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
+local timerEmerge			= mod:NewTimer(62, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 
 -- Submerge
 local warnSubmerge			= mod:NewAnnounce("WarnSubmerge", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
@@ -46,10 +46,14 @@ local timerSubmerge			= mod:NewTimer(75, "TimerSubmerge", "Interface\\AddOns\\DB
 -- Phases
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local enrageTimer			= mod:NewBerserkTimer(570)	-- 9:30 ? hmpf (no enrage while submerged... this sucks)
+local isPhase3  			= false
 
 -- Penetrating Cold
 local specWarnPCold			= mod:NewSpecialWarningYou(68510, false)
-local timerPCold			= mod:NewBuffActiveTimer(15, 68509)
+local timerPCold			= mod:NewBuffActiveTimer(18, 68509)
+local PColdCountdown		= mod:NewCountdown(68509, "PlayPColdCountdown", false)
+local timerNextPCold		= mod:NewCDTimer(68509, 20)
+
 mod:AddBoolOption("SetIconsOnPCold", true)
 mod:AddBoolOption("AnnouncePColdIcons", false)
 mod:AddBoolOption("AnnouncePColdIconsRemoved", false)
@@ -59,13 +63,14 @@ local warnFreezingSlash		= mod:NewTargetAnnounce(66012, 2, nil, mod:IsHealer() o
 local timerFreezingSlash	= mod:NewCDTimer(20, 66012, nil, mod:IsHealer() or mod:IsTank())
 
 -- Shadow Strike
-local timerShadowStrike		= mod:NewNextTimer(30.5, 66134)
+local timerShadowStrike		= mod:NewNextTimer(25, 66134)
 local preWarnShadowStrike	= mod:NewSoonAnnounce(66134, 3)
 local warnShadowStrike		= mod:NewSpellAnnounce(66134, 4)
 local specWarnShadowStrike	= mod:NewSpecialWarning("SpecWarnShadowStrike", mod:IsTank())
 
 function mod:OnCombatStart(delay)
-	Burrowed = false 
+	Burrowed = false
+	isPhase3 = false
 	timerAdds:Start(10-delay) 
 	warnAdds:Schedule(10-delay) 
 	self:ScheduleMethod(10-delay, "Adds")
@@ -76,8 +81,8 @@ function mod:OnCombatStart(delay)
 	timerFreezingSlash:Start(-delay)
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 		timerShadowStrike:Start()
-		preWarnShadowStrike:Schedule(25.5-delay)
-		self:ScheduleMethod(30.5-delay, "ShadowStrike")
+		preWarnShadowStrike:Schedule(20-delay)
+		self:ScheduleMethod(25-delay, "ShadowStrike")
 	end
 end
 
@@ -95,9 +100,9 @@ function mod:ShadowStrike()
 	if self:IsInCombat() then
 		timerShadowStrike:Start()
 		preWarnShadowStrike:Cancel()
-		preWarnShadowStrike:Schedule(25.5)
+		preWarnShadowStrike:Schedule(20)
 		self:UnscheduleMethod("ShadowStrike")
-		self:ScheduleMethod(30.5, "ShadowStrike")
+		self:ScheduleMethod(25, "ShadowStrike")
 	end
 end
 
@@ -144,7 +149,12 @@ function mod:SPELL_AURA_APPLIED(args)
 				self:SetPcoldIcons()--Sort and fire as early as possible once we have all targets.
 			end
 		end
-		timerPCold:Show() 
+		timerPCold:Show()
+
+		if self.Options.ShowPColdTimer and isPhase3 then
+			timerNextPCold:Start()
+			PColdCountdown:Schedule(17, 3)
+		end
 	elseif args:IsSpellID(66012) then							-- Freezing Slash
 		warnFreezingSlash:Show(args.destName)
 		timerFreezingSlash:Start()
@@ -170,6 +180,7 @@ end
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(66118, 67630, 68646, 68647) then			-- Swarm (start p3)
 		warnPhase3:Show()
+		isPhase3 = true
 		warnEmergeSoon:Cancel()
 		warnSubmergeSoon:Cancel()
 		specWarnSubmergeSoon:Cancel()
@@ -190,30 +201,34 @@ function mod:SPELL_CAST_START(args)
 	end
 end
 
+function mod:emerge()
+	Burrowed = false
+	timerAdds:Start(5)
+	warnAdds:Schedule(5)
+	self:ScheduleMethod(5, "Adds")
+	warnEmerge:Show()
+	warnSubmergeSoon:Schedule(65)
+	specWarnSubmergeSoon:Schedule(65)
+	timerSubmerge:Start()
+	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
+		timerShadowStrike:Start(20)  -- Comes 20s after emerge, 5s off normal cd.
+		preWarnShadowStrike:Cancel()
+		preWarnShadowStrike:Schedule(15)
+		self:UnscheduleMethod("ShadowStrike")
+		self:ScheduleMethod(20, "ShadowStrike")  -- Schedule regular event for next cast.
+	end
+end
+
 function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 	if msg and msg:find(L.Burrow) then
 		Burrowed = true
 		timerAdds:Cancel()
 		warnAdds:Cancel()
 		warnSubmerge:Show()
-		warnEmergeSoon:Schedule(55)
+		warnEmergeSoon:Schedule(52)
 		timerEmerge:Start()
 		timerFreezingSlash:Stop()
-	elseif msg and msg:find(L.Emerge) then
-		Burrowed = false
-		timerAdds:Start(5)
-		warnAdds:Schedule(5)
-		self:ScheduleMethod(5, "Adds")
-		warnEmerge:Show()
-		warnSubmergeSoon:Schedule(65)
-		specWarnSubmergeSoon:Schedule(65)
-		timerSubmerge:Start()
-		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
-			timerShadowStrike:Stop()
-			preWarnShadowStrike:Cancel()
-			self:UnscheduleMethod("ShadowStrike")
-			self:ScheduleMethod(5.5, "ShadowStrike")  -- 35-36sec after Emerge next ShadowStrike
-		end
+		self:ScheduleMethod(62, "emerge")
 	end
 end
 
