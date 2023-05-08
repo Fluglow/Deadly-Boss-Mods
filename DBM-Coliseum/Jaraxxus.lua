@@ -40,7 +40,7 @@ local specWarnNetherPower		= mod:NewSpecialWarning("SpecWarnNetherPower", isDisp
 local specWarnFelInferno		= mod:NewSpecialWarningMove(68718)
 local SpecWarnFelFireball		= mod:NewSpecialWarning("SpecWarnFelFireball", false)
 local SpecWarnFelFireballDispel	= mod:NewSpecialWarningDispel(66965, isMagicDispeller)
-local specWarnTouch				= mod NewSpecialWarningYou("SpecWarnTouch", 66209)
+local specWarnTouch				= mod:NewSpecialWarningYou("SpecWarnTouch", 66209)
 
 local timerCombatStart			= mod:NewTimer(84, "TimerCombatStart", 2457)--rollplay for first pull
 local enrageTimer				= mod:NewBerserkTimer(600)
