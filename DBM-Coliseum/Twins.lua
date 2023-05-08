@@ -29,6 +29,8 @@ local specWarnKickNow 				= mod:NewSpecialWarning("SpecWarnKickNow")
 local specWarnPoweroftheTwins		= mod:NewSpecialWarning("SpecWarnPoweroftheTwins")
 local specWarnEmpoweredDarkness		= mod:NewSpecialWarningYou(67215)
 local specWarnEmpoweredLight		= mod:NewSpecialWarningYou(67218)
+local specWarnDebuffLight			= mod:NewSpecialWarningYou(67297)
+local specWarnDebuffDark			= mod:NewSpecialWarningYou(67282)
 
 local enrageTimer					= mod:NewBerserkTimer(360)
 local timerSpecial					= mod:NewTimer(45, "TimerSpecialSpell", "Interface\\Icons\\INV_Enchant_EssenceMagicLarge")
@@ -37,7 +39,9 @@ local timerLightTouch				= mod:NewTargetTimer(20, 67298)
 local timerDarkTouch				= mod:NewTargetTimer(20, 67283)
 local timerAchieve					= mod:NewAchievementTimer(180, 3815, "TimerSpeedKill")
 
-mod:AddBoolOption("SpecialWarnOnDebuff", false, "announce")
+mod:AddBoolOption("SpecialWarnOnDebuff", true, "announce")
+mod:AddBoolOption("SpecialWarnOnDebuffSame", false, "announce")
+mod:AddBoolOption("YellOnOppositeDebuff", true)
 mod:AddBoolOption("SetIconOnDebuffTarget", true)
 mod:AddBoolOption("HealthFrame", true)
 
@@ -99,6 +103,30 @@ function mod:warnDebuff()
 	table.wipe(debuffTargets)
 	self:UnscheduleMethod("resetDebuff")
 	self:ScheduleMethod(5, "resetDebuff")
+end
+
+function mod:warnPersonalDebuff(isLight)
+	local dark = UnitDebuff("player", darkEssence)
+	local light = UnitDebuff("player", lightEssence)
+	if isLight then
+		if dark and self.Options.SpecialWarnOnDebuff then
+			specWarnDebuffDark:Show()
+			if self.Options.YellOnOppositeDebuff then
+				SendChatMessage("Light Essence on me!", "SAY")
+			end
+		elseif light and self.Options.SpecialWarnOnDebuffSame then
+			specWarnDebuffLight:Show()
+		end
+	else
+		if dark and self.Options.SpecialWarnOnDebuffSame then
+			specWarnDebuffDark:Show()
+		elseif light and self.Options.SpecialWarnOnDebuff then
+			specWarnDebuffLight:Show()
+			if self.Options.YellOnOppositeDebuff then
+				SendChatMessage("Light Essence on me!", "SAY")
+			end
+		end
+	end
 end
 
 local function showPowerWarning(self, cid)
@@ -163,8 +191,8 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif args:IsPlayer() and args:IsSpellID(65748, 67216, 67217, 67218) then	-- Empowered Light
 		specWarnEmpoweredLight:Show()
 	elseif args:IsSpellID(65950, 67296, 67297, 67298) then	-- Touch of Light
-		if args:IsPlayer() and self.Options.SpecialWarnOnDebuff then
-			specWarnSpecial:Show()
+		if args:IsPlayer() then
+			warnPersonalDebuff:Show(true)
 		end
 		timerLightTouch:Start(args.destName)
 		if self.Options.SetIconOnDebuffTarget then
@@ -175,8 +203,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		self:UnscheduleMethod("warnDebuff")
 		self:ScheduleMethod(0.9, "warnDebuff")
 	elseif args:IsSpellID(66001, 67281, 67282, 67283) then	-- Touch of Darkness
-		if args:IsPlayer() and self.Options.SpecialWarnOnDebuff then
-			specWarnSpecial:Show()
+		if args:IsPlayer() then
+			warnPersonalDebuff:Show(false)
 		end
 		timerDarkTouch:Start(args.destName)
 		if self.Options.SetIconOnDebuffTarget then
