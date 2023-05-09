@@ -110,7 +110,7 @@ function mod:warnPersonalDebuff(isLight)
 	local light = UnitDebuff("player", lightEssence)
 	if isLight then
 		if dark and self.Options.SpecialWarnOnDebuff then
-			specWarnDebuffDark:Show()
+			specWarnDebuffLight:Show()
 			if self.Options.YellOnOppositeDebuff then
 				SendChatMessage("Light Essence on me!", "SAY")
 			end
@@ -121,7 +121,7 @@ function mod:warnPersonalDebuff(isLight)
 		if dark and self.Options.SpecialWarnOnDebuffSame then
 			specWarnDebuffDark:Show()
 		elseif light and self.Options.SpecialWarnOnDebuff then
-			specWarnDebuffLight:Show()
+			specWarnDebuffDark:Show()
 			if self.Options.YellOnOppositeDebuff then
 				SendChatMessage("Dark Essence on me!", "SAY")
 			end
