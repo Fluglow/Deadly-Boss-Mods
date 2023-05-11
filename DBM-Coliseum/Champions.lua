@@ -10,6 +10,7 @@ mod:RegisterCombat("combat")
 
 mod:RegisterEvents(
 	"SPELL_CAST_SUCCESS",
+	"SPELL_CAST_START",
 	"SPELL_DAMAGE",
 	"SPELL_AURA_APPLIED",
 	"UNIT_DIED"
@@ -124,8 +125,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 		else
 			timerDeathgripCD:Start()
 		end
+	end
+end
 
-	elseif args:IsSpellID(65867) then
+function mod:SPELL_CAST_START(args)
+	if args:IsSpellID(65867) then
 		specWarnSteadyShot:Show()
 	end
 end
