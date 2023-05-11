@@ -71,8 +71,8 @@ local specWarnShadowStrike	= mod:NewSpecialWarning("SpecWarnShadowStrike", mod:I
 function mod:OnCombatStart(delay)
 	Burrowed = false
 	isPhase3 = false
-	timerAdds:Start(10-delay) 
-	warnAdds:Schedule(10-delay) 
+	timerAdds:Start(10-delay)
+	warnAdds:Schedule(10-delay)
 	self:ScheduleMethod(10-delay, "Adds")
 	warnSubmergeSoon:Schedule(70-delay)
 	specWarnSubmergeSoon:Schedule(70-delay)
@@ -144,19 +144,21 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 
 	elseif args:IsSpellID(66013, 67700, 68509, 68510) then		-- Penetrating Cold
-		if args:IsPlayer() then
+		if args:IsPlayer() and isPhase3 then
 			specWarnPCold:Show()
 		end
 		if self.Options.SetIconsOnPCold then
 			table.insert(PColdTargets, DBM:GetRaidUnitId(args.destName))
-			if ((mod:IsDifficulty("normal25") or mod:IsDifficulty("heroic25")) and #PColdTargets >= 5) or ((mod:IsDifficulty("normal10") or mod:IsDifficulty("heroic10")) and #PColdTargets >= 2) then
-				self:SetPcoldIcons()--Sort and fire as early as possible once we have all targets.
-			end
+			-- Set icons after 0.2s to wait for last application.
+			-- We can't rely on count here since the debuff can miss.
+			self:UnscheduleMethod("SetPcoldIcons")
+			self:ScheduleMethod(0.2, "SetPcoldIcons")
 		end
 		timerPCold:Show()
 
 		if isPhase3 then
 			timerNextPCold:Start()
+			PColdCountdown:Cancel()
 			PColdCountdown:Schedule(17, 3)
 		end
 	elseif args:IsSpellID(66012) then							-- Freezing Slash
