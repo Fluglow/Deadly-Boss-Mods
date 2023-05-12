@@ -348,11 +348,13 @@ function mod:UNIT_DIED(args)
 		else
 			timerSlimePoolCD:Cancel()
 		end
+
 		if DreadscaleDead then
 			DBM.BossHealth:RemoveBoss(35144)
 			DBM.BossHealth:RemoveBoss(34799)
-		end
-		if submerged then
+			self:UnscheduleMethod("WormsSubmerge")
+			self:UnscheduleMethod("WormsEmerge")
+		elseif submerged then
 			self:UnscheduleMethod("WormsEmerge");
 			self:WormsEmerge();
 		end
@@ -369,6 +371,8 @@ function mod:UNIT_DIED(args)
 		if AcidmawDead then
 			DBM.BossHealth:RemoveBoss(35144)
 			DBM.BossHealth:RemoveBoss(34799)
+			self:UnscheduleMethod("WormsSubmerge")
+			self:UnscheduleMethod("WormsEmerge")
 		end
 	end
 end

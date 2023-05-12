@@ -45,7 +45,7 @@ DBM = {
 	Revision = ("$Revision: 9008 $"):sub(12, -3),
 	Version = "9.10",
 	DisplayVersion = "9.10-Dalaran", -- the string that is shown as version
-	ReleaseRevision = 9008 -- the revision of the latest stable version that is available (for /dbm ver2)
+	ReleaseRevision = 9009 -- the revision of the latest stable version that is available (for /dbm ver2)
 }
 
 DBM_SavedOptions = {}
