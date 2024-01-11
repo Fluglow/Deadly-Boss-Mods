@@ -99,7 +99,7 @@ local countdownValkyrs		= mod:NewCountdown(71844, "PlayCountdownOnValkyrs", fals
 local timerVileSpirit 		= mod:NewNextTimer(30.5, 70498)
 local timerTrapCD		 	= mod:NewCDTimer(15.5, 73539)
 local countdownShadowTrap	= mod:NewCountdown(73539, "PlayCountdownOnShadowTrap", not (mod:IsTank() or mod:IsHealer() or mod:CanRemoveEnrage()))
-local timerRestoreSoul 		= mod:NewCastTimer(40, 73650)
+local timerRestoreSoul 		= mod:NewCastTimer(31, 73650)
 local timerRoleplay			= mod:NewTimer(162, "TimerRoleplay", 72350)
 
 local berserkTimer			= mod:NewBerserkTimer(900)
@@ -468,12 +468,13 @@ function mod:SPELL_CAST_START(args)
 			self:ScheduleMethod(0.09, "TrapTarget")
 			self:ScheduleMethod(0.1, "TrapTarget")
 		end
-	elseif args:IsSpellID(73650) then -- Restore Soul (Heroic)
-		warnRestoreSoul:Show()
-		timerRestoreSoul:Start()
-        timerDefileCD:Start(41)
-        warnDefileSoon:Schedule(41-5)
-        countdownDefile:Schedule(41-5, 5)
+	-- --No longer triggers on spellcast but on monster yell function: ~line 744 - L.TMRestoreSoul
+	-- elseif args:IsSpellID(73650) then -- Restore Soul (Heroic)
+	-- 	warnRestoreSoul:Show()
+	-- 	timerRestoreSoul:Start()
+    --     timerDefileCD:Start(41)
+    --     warnDefileSoon:Schedule(41-5)
+    --     countdownDefile:Schedule(41-5, 5)
 	elseif args:IsSpellID(72350) then -- Fury of Frostmourne
 		mod:SetWipeTime(160)--Change min wipe time mid battle to force dbm to keep module loaded for this long out of combat roleplay, hopefully without breaking mod.
 		timerRoleplay:Start()
@@ -743,6 +744,12 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.LKPull or msg:find(L.LKPull) then
 		timerCombatStart:Start()
+	elseif msg == L.TMRestoreSoul or msg:find(L.TMRestoreSoul) then
+		warnRestoreSoul:Show()
+		timerRestoreSoul:Start()
+        timerDefileCD:Start(41-9)
+        warnDefileSoon:Schedule(41-5-9)
+        countdownDefile:Schedule(41-5-9, 5)
 	end
 end
 
