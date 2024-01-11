@@ -579,5 +579,6 @@ L:SetMiscLocalization{
 	ValkGrabbedIcon			= "Valkyr Shadowguard {rt%d} grabbed %s",
 	ValkGrabbed				= "Valkyr Shadowguard grabbed %s",
 	PlagueStackWarning		= "Warning: %s has %d stacks of Necrotic Plague",
+	TMRestoreSoul 			= "First, you must escape Frostmourne's hold, or be damned as I am; trapped within this cursed blade for all eternity.",
 	AchievementCompleted	= ">> ACHIEVEMENT COMPLETE: %s has %d stacks of Necrotic Plague <<"
 }
